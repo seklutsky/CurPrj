@@ -1,0 +1,46 @@
+*** Creating Trace Output File 'F415.tra' Ok.
+### Preparing for ADS-LD.
+### Creating ADS-LD Command Line
+### List of Objects: adding '"startup_stm32f4xx.o"'
+### List of Objects: adding '"main.o"'
+### List of Objects: adding '"timer_2.o"'
+### List of Objects: adding '"can_2.o"'
+### List of Objects: adding '"adc.o"'
+### List of Objects: adding '"can_1.o"'
+### List of Objects: adding '"boot.o"'
+### List of Objects: adding '"unit_freemaster_uart.o"'
+### List of Objects: adding '"misc.o"'
+### List of Objects: adding '"system_stm32f4xx.o"'
+### List of Objects: adding '"stm32f4xx_gpio.o"'
+### List of Objects: adding '"stm32f4xx_syscfg.o"'
+### List of Objects: adding '"stm32f4xx_usart.o"'
+### List of Objects: adding '"stm32f4xx_tim.o"'
+### List of Objects: adding '"stm32f4xx_rcc.o"'
+### List of Objects: adding '"stm32f4xx_rtc.o"'
+### List of Objects: adding '"stm32f4xx_can.o"'
+### List of Objects: adding '"stm32f4xx_adc.o"'
+### List of Objects: adding '"pe_freemaster_56f8xxx.o"'
+### List of Objects: adding '"pe_freemaster_appcmd.o"'
+### List of Objects: adding '"pe_freemaster_fastrec.o"'
+### List of Objects: adding '"pe_freemaster_protocol.o"'
+### List of Objects: adding '"pe_freemaster_rec.o"'
+### List of Objects: adding '"pe_freemaster_scope.o"'
+### List of Objects: adding '"pe_freemaster_serial.o"'
+### List of Objects: adding '"pe_freemaster_sfio.o"'
+### List of Objects: adding '"pe_freemaster_tsa.o"'
+### ADS-LD Command completed:
+--cpu Cortex-M4.fp "startup_stm32f4xx.o" "main.o" "timer_2.o" "can_2.o" "adc.o" "can_1.o" "boot.o" "unit_freemaster_uart.o" "misc.o" "system_stm32f4xx.o" "stm32f4xx_gpio.o" "stm32f4xx_syscfg.o" "stm32f4xx_usart.o" "stm32f4xx_tim.o" "stm32f4xx_rcc.o" "stm32f4xx_rtc.o" "stm32f4xx_can.o" "stm32f4xx_adc.o" "pe_freemaster_56f8xxx.o" "pe_freemaster_appcmd.o" "pe_freemaster_fastrec.o" "pe_freemaster_protocol.o" "pe_freemaster_rec.o" "pe_freemaster_scope.o" "pe_freemaster_serial.o" "pe_freemaster_sfio.o" "pe_freemaster_tsa.o" 
+--strict --scatter "F415.sct" 
+--summary_stderr --info summarysizes --map --xref --callgraph --symbols 
+--info sizes --info totals --info unused --info veneers 
+ --list ".\F415.map" -o F415.axf### Preparing Environment (PrepEnvAds)
+### ADS-LD Output File: 'F415.axf'
+### ADS-LD Command File: 'F415.lnp'
+### Checking for dirty Components...
+### Creating CmdFile 'F415.lnp', Handle=0x00000598
+### Writing '.lnp' file
+### ADS-LD Command file 'F415.lnp' is ready.
+### ADS-LD: About to start ADS-LD Thread.
+### ADS-LD: executed with 0 errors
+### Updating obj list
+### LDADS_file() completed.

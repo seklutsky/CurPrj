@@ -1,0 +1,240 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000         ;/******************************************************
+                       ***********************/
+    2 00000000         ;/* STM32F4xx_OPT.s: STM32F4xx Flash Option Bytes       
+                                             */
+    3 00000000         ;/******************************************************
+                       ***********************/
+    4 00000000         ;/* <<< Use Configuration Wizard in Context Menu >>>    
+                                             */
+    5 00000000         ;/******************************************************
+                       ***********************/
+    6 00000000         ;/* This file is part of the uVision/ARM development too
+                       ls.                   */
+    7 00000000         ;/* Copyright (c) 2012 Keil Software. All rights reserve
+                       d.                    */
+    8 00000000         ;/* This software may only be used under the terms of a 
+                       valid, current,       */
+    9 00000000         ;/* end user licence from KEIL for a compatible version 
+                       of KEIL software      */
+   10 00000000         ;/* development tools. Nothing else gives you the right 
+                       to use this software. */
+   11 00000000         ;/******************************************************
+                       ***********************/
+   12 00000000         
+   13 00000000         
+   14 00000000         ;// <e> Flash Option Bytes
+   15 00000000 00000001 
+                       FLASH_OPT
+                               EQU              1
+   16 00000000         
+   17 00000000         ;// <h> Flash Read Protection
+   18 00000000         ;//     <i> Read protection is used to protect the softw
+                       are code stored in Flash memory
+   19 00000000         ;//   <o0> Read Protection Level
+   20 00000000         ;//     <i> Level 0: No Protection 
+   21 00000000         ;//     <i> Level 1: Read Protection of Memories (debug 
+                       features limited)
+   22 00000000         ;//     <i> Level 2: Chip Protection (debug and boot in 
+                       RAM features disabled)
+   23 00000000         ;//          <0xAA=> Level 0 (No Protection) 
+   24 00000000         ;//          <0x00=> Level 1 (Read Protection of Memorie
+                       s)
+   25 00000000         ;//          <0xCC=> Level 2 (Chip Protection)
+   26 00000000         ;// </h>
+   27 00000000 000000AA 
+                       RDP     EQU              0xAA
+   28 00000000 00000055 
+                       nRDP    EQU              RDP:EOR:0xFF
+   29 00000000         
+   30 00000000         ;// <h> Flash Write Protection
+   31 00000000         ;//   <o0.0> Sector 0
+   32 00000000         ;//   <o0.1> Sector 1
+   33 00000000         ;//   <o0.2> Sector 2
+   34 00000000         ;//   <o0.3> Sector 3
+   35 00000000         ;//   <o0.4> Sector 4
+   36 00000000         ;//   <o0.5> Sector 5
+   37 00000000         ;//   <o0.6> Sector 6
+   38 00000000         ;//   <o0.7> Sector 7
+   39 00000000         ;//   <o1.0> Sector 8
+   40 00000000         ;//   <o1.1> Sector 9
+
+
+
+ARM Macro Assembler    Page 2 
+
+
+   41 00000000         ;//   <o1.2> Sector 10
+   42 00000000         ;//   <o1.3> Sector 11
+   43 00000000         ;// </h>
+   44 00000000 00000000 
+                       WRP0    EQU              0x00
+   45 00000000 00000000 
+                       WRP1    EQU              0x00
+   46 00000000 000000FF 
+                       nWRP0   EQU              WRP0:EOR:0xFF
+   47 00000000 000000FF 
+                       nWRP1   EQU              WRP1:EOR:0xFF
+   48 00000000         
+   49 00000000         ;// <h> User Configuration
+   50 00000000         ;//   <o0.2..3> BOR_LEV     
+   51 00000000         ;//          <0=> BOR Level 3 (VBOR3). Reset threshold l
+                       evel from 2.70 to 3.60 V
+   52 00000000         ;//          <1=> BOR Level 2 (VBOR2). Reset threshold l
+                       evel from 2.40 to 2.70 V
+   53 00000000         ;//          <2=> BOR Level 1 (VBOR1). Reset threshold l
+                       evel from 2.10 to 2.40 V
+   54 00000000         ;//          <3=> BOR off     (VBOR0). Reset threshold l
+                       evel from 1.80 to 2.10 V
+   55 00000000         ;//   <o0.5> WDG_SW     
+   56 00000000         ;//          <0=> HW Watchdog <1=> SW Watchdog
+   57 00000000         ;//   <o0.6> nRST_STOP  <i> Generate Reset when entering
+                        STOP Mode
+   58 00000000         ;//          <0=> Enabled <1=> Disabled
+   59 00000000         ;//   <o0.7> nRST_STDBY <i> Generate Reset when entering
+                        Standby Mode
+   60 00000000         ;//          <0=> Enabled <1=> Disabled
+   61 00000000         ;// </h>
+   62 00000000 000000F7 
+                       USER    EQU              0xF7
+   63 00000000 00000008 
+                       nUSER   EQU              USER:EOR:0xFF
+   64 00000000         
+   65 00000000         ;// </e>
+   66 00000000         
+   67 00000000         
+   68 00000000                 IF               FLASH_OPT <> 0
+   69 00000000                 AREA             |.ARM.__AT_0x1FFFC000|, CODE, R
+EADONLY
+   70 00000000 F7 AA 08 
+              55 F7 AA 
+              08 55            DCB              USER,   RDP,  nUSER, nRDP,   US
+ER,   RDP,  nUSER, nRDP
+   71 00000008 FF FF 00 
+              00 FF FF 
+              00 00            DCB              nWRP0,  nWRP1,  WRP0,  WRP1, nW
+RP0,  nWRP1,  WRP0,  WRP1
+   72 00000010                 ENDIF
+   73 00000010         
+   74 00000010                 END
+Command Line: --debug --xref --cpu=Cortex-M4.fp --apcs=interwork --depend=STM32
+F4xx_OPT.d -oSTM32F4xx_OPT.o -IC:\Keil\ARM\RV31\INC -IC:\Keil\ARM\CMSIS\Include
+ -IC:\Keil\ARM\Inc\ST\STM32F4xx --list=STM32F4xx_OPT.lst STM32F4xx_OPT.s
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+.ARM.__AT_0x1FFFC000 00000000
+
+Symbol: .ARM.__AT_0x1FFFC000
+   Definitions
+      At line 69 in file STM32F4xx_OPT.s
+   Uses
+      None
+Comment: .ARM.__AT_0x1FFFC000 unused
+1 symbol
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Absolute symbols
+
+FLASH_OPT 00000001
+
+Symbol: FLASH_OPT
+   Definitions
+      At line 15 in file STM32F4xx_OPT.s
+   Uses
+      At line 68 in file STM32F4xx_OPT.s
+Comment: FLASH_OPT used once
+RDP 000000AA
+
+Symbol: RDP
+   Definitions
+      At line 27 in file STM32F4xx_OPT.s
+   Uses
+      At line 28 in file STM32F4xx_OPT.s
+      At line 70 in file STM32F4xx_OPT.s
+      At line 70 in file STM32F4xx_OPT.s
+
+USER 000000F7
+
+Symbol: USER
+   Definitions
+      At line 62 in file STM32F4xx_OPT.s
+   Uses
+      At line 63 in file STM32F4xx_OPT.s
+      At line 70 in file STM32F4xx_OPT.s
+      At line 70 in file STM32F4xx_OPT.s
+
+WRP0 00000000
+
+Symbol: WRP0
+   Definitions
+      At line 44 in file STM32F4xx_OPT.s
+   Uses
+      At line 46 in file STM32F4xx_OPT.s
+      At line 71 in file STM32F4xx_OPT.s
+      At line 71 in file STM32F4xx_OPT.s
+
+WRP1 00000000
+
+Symbol: WRP1
+   Definitions
+      At line 45 in file STM32F4xx_OPT.s
+   Uses
+      At line 47 in file STM32F4xx_OPT.s
+      At line 71 in file STM32F4xx_OPT.s
+      At line 71 in file STM32F4xx_OPT.s
+
+nRDP 00000055
+
+Symbol: nRDP
+   Definitions
+      At line 28 in file STM32F4xx_OPT.s
+   Uses
+      At line 70 in file STM32F4xx_OPT.s
+      At line 70 in file STM32F4xx_OPT.s
+
+nUSER 00000008
+
+
+
+
+ARM Macro Assembler    Page 2 Alphabetic symbol ordering
+Absolute symbols
+
+Symbol: nUSER
+   Definitions
+      At line 63 in file STM32F4xx_OPT.s
+   Uses
+      At line 70 in file STM32F4xx_OPT.s
+      At line 70 in file STM32F4xx_OPT.s
+
+nWRP0 000000FF
+
+Symbol: nWRP0
+   Definitions
+      At line 46 in file STM32F4xx_OPT.s
+   Uses
+      At line 71 in file STM32F4xx_OPT.s
+      At line 71 in file STM32F4xx_OPT.s
+
+nWRP1 000000FF
+
+Symbol: nWRP1
+   Definitions
+      At line 47 in file STM32F4xx_OPT.s
+   Uses
+      At line 71 in file STM32F4xx_OPT.s
+      At line 71 in file STM32F4xx_OPT.s
+
+9 symbols
+340 symbols in table
