@@ -39,7 +39,7 @@ void buttons_counterClr(void)
 
 void buttons_tranfer(void)
 {
-	if(button_SW_AUTO == 0) 
+	if(button_SW_AUTO != 0) 
 	{		
 		button_SW8 = button_SW8<<1;
 		if(SW8) button_SW8 |= 1;		

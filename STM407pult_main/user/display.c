@@ -63,29 +63,33 @@ void display_ControlPWM(void)
 		SET_STB_OUT_PORT;
 		CLR_VOFF_OUT_PORT;
 		DAC_set_level(1,DAC_MAX);
+		disp1color_printf(1, 0, FONTID_6X8M, "VL-IN(PWM) Control");
 	
-	disp1color_printf(1, 0, FONTID_6X8M, "VL-IN(PWM) Control");
-	EncoderMode[Disp_ControlPWM] = Encoder_get_position();
-	Temp_pwm = (uint16_t)((float)(EncoderMode[Disp_ControlPWM] * 100.0f) / (float)ENCODER_MAX);
-	PWM_set(Temp_pwm);
-	Temp_PWM_proc = (float)Temp_pwm;
-	disp1color_printf(1, 10, FONTID_6X8M, "PWM = %0.0f %%", Temp_PWM_proc);
-	adcI = getADCresult(1);
-	Temp_adcI_float_B = (float)adcI * 31.0f/4096.0f;
-	disp1color_printf(1, 20, FONTID_6X8M, "I-LOAD =  %0.2f A", Temp_adcI_float_B);
-	adcIP48 = getADCresult(0);
-	Temp_adcIP48_float_B = (float)adcIP48 * 31.0f/4096.0f;
-	disp1color_printf(1, 30, FONTID_6X8M, "I-P48 =  %0.2f A", Temp_adcIP48_float_B);	
-	Temp_dac = (uint16_t)((float)(EncoderMode[Disp_ControlDAC1] * DAC_MAX) / (float)ENCODER_MAX);
-	VA_IN = (float)Temp_dac * VOLT_MAX/4096.0f;
-	disp1color_printf(1, 40, FONTID_6X8M, "ЦАП VA-IN =  %0.2f V", VA_IN);
 	if(CanMaster == 0) 
-	{
+	{	
+		EncoderMode[Disp_ControlPWM] = Encoder_get_position();
+		Temp_pwm = (uint16_t)((float)(EncoderMode[Disp_ControlPWM] * 100.0f) / (float)ENCODER_MAX);
+		PWM_set(Temp_pwm);
+		Temp_PWM_proc = (float)Temp_pwm;
+		disp1color_printf(1, 10, FONTID_6X8M, "PWM = %0.0f %%", Temp_PWM_proc);
+		adcI = getADCresult(1);
+		Temp_adcI_float_B = (float)adcI * 31.0f/4096.0f;
+		disp1color_printf(1, 20, FONTID_6X8M, "I-LOAD =  %0.2f A", Temp_adcI_float_B);
+		adcIP48 = getADCresult(0);
+		Temp_adcIP48_float_B = (float)adcIP48 * 31.0f/4096.0f;
+		disp1color_printf(1, 30, FONTID_6X8M, "I-P48 =  %0.2f A", Temp_adcIP48_float_B);	
+		Temp_dac = (uint16_t)((float)(EncoderMode[Disp_ControlDAC1] * DAC_MAX) / (float)ENCODER_MAX);
+		VA_IN = (float)Temp_dac * VOLT_MAX/4096.0f;
+		disp1color_printf(1, 40, FONTID_6X8M, "ЦАП VA-IN =  %0.2f V", VA_IN);
 		disp1color_printf(1, 50, FONTID_6X8M, "V-LED=%0.1f V-BUS=%0.1f", (float)V_led*63.3/256.0, (float)V_bus*63.3/256.0);
 	}
 	else
 	{
-		disp1color_printf(1, 50, FONTID_6X8M, "V-LED & V-BUS in slave mode only");
+		disp1color_printf(1, 10, FONTID_6X8M, "Источник SLAVE");
+    disp1color_printf(1, 20, FONTID_6X8M, "и не регулируется");
+		disp1color_printf(1, 30, FONTID_6X8M, "внешними сигналами");
+		disp1color_printf(1, 40, FONTID_6X8M, "Перейдите в окно CAN");
+		disp1color_printf(1, 50, FONTID_6X8M, "чтобы управлять");
 	}
 }
 
@@ -100,25 +104,36 @@ void display_ControlDAC1(void)
 	uint16_t Temp_pwm;
 	float Temp_PWM_proc;
 	
-		SET_STB_OUT_PORT;
-		CLR_VOFF_OUT_PORT;
-		PWM_set(100);
+	SET_STB_OUT_PORT;
+	CLR_VOFF_OUT_PORT;
+	PWM_set(100);
 	
 	disp1color_printf(1, 0, FONTID_6X8M, "VA-IN Control");
-	EncoderMode[Disp_ControlDAC1] = Encoder_get_position();
-	Temp_dac = (uint16_t)((float)(EncoderMode[Disp_ControlDAC1] * DAC_MAX) / (float)ENCODER_MAX);
-	DAC_set_level(1,Temp_dac);
-	VA_IN = (float)Temp_dac * VOLT_MAX/4096.0f;
-	disp1color_printf(1, 12, FONTID_6X8M, "ЦАП =  %0.2f V", VA_IN);
-	adcI = getADCresult(1);
-	Temp_adcI_float_B = (float)adcI * 31.0f/4096.0f;
-	disp1color_printf(1, 24, FONTID_6X8M, "I-LOAD =  %0.2f A", Temp_adcI_float_B);
-	adcIP48 = getADCresult(0);
-	Temp_adcIP48_float_B = (float)adcIP48 * 31.0f/4096.0f;
-	disp1color_printf(1, 36, FONTID_6X8M, "I-P48 =  %0.2f A", Temp_adcIP48_float_B);
-	Temp_pwm = (uint16_t)((float)(EncoderMode[Disp_ControlPWM] * 100.0) / (float)ENCODER_MAX);	
-	Temp_PWM_proc = (float)Temp_pwm;
-	disp1color_printf(1, 48, FONTID_6X8M, "PWM = %0.0f %%", Temp_PWM_proc);	
+	if(CanMaster == 0) 
+	{		
+		EncoderMode[Disp_ControlDAC1] = Encoder_get_position();
+		Temp_dac = (uint16_t)((float)(EncoderMode[Disp_ControlDAC1] * DAC_MAX) / (float)ENCODER_MAX);
+		DAC_set_level(1,Temp_dac);
+		VA_IN = (float)Temp_dac * VOLT_MAX/4096.0f;
+		disp1color_printf(1, 12, FONTID_6X8M, "ЦАП =  %0.2f V", VA_IN);
+		adcI = getADCresult(1);
+		Temp_adcI_float_B = (float)adcI * 31.0f/4096.0f;
+		disp1color_printf(1, 24, FONTID_6X8M, "I-LOAD =  %0.2f A", Temp_adcI_float_B);
+		adcIP48 = getADCresult(0);
+		Temp_adcIP48_float_B = (float)adcIP48 * 31.0f/4096.0f;
+		disp1color_printf(1, 36, FONTID_6X8M, "I-P48 =  %0.2f A", Temp_adcIP48_float_B);
+		Temp_pwm = (uint16_t)((float)(EncoderMode[Disp_ControlPWM] * 100.0) / (float)ENCODER_MAX);	
+		Temp_PWM_proc = (float)Temp_pwm;
+		disp1color_printf(1, 48, FONTID_6X8M, "PWM = %0.0f %%", Temp_PWM_proc);
+	}		
+	else
+	{
+		disp1color_printf(1, 10, FONTID_6X8M, "Источник SLAVE");
+    disp1color_printf(1, 20, FONTID_6X8M, "и не регулируется");
+		disp1color_printf(1, 30, FONTID_6X8M, "внешними сигналами");
+		disp1color_printf(1, 40, FONTID_6X8M, "Перейдите в окно CAN");
+		disp1color_printf(1, 50, FONTID_6X8M, "чтобы управлять");
+	}
 }
 
 
@@ -196,22 +211,22 @@ void display_CAN(void)
 	{
 		  EncoderMode[Disp_ControlPWM] = Encoder_get_position();			
 		  Sin = (uint16_t)((float)(EncoderMode[Disp_ControlPWM] * U2_5V) / (float)ENCODER_MAX);
-			disp1color_printf(1, 0, FONTID_6X8M, "Master Mode");
-		  disp1color_printf(1, 11, FONTID_6X8M, "Задание =  %0.2f %%", (float)Sin * 100.0f / (float)U2_5V);
+			disp1color_printf(1, 10, FONTID_6X8M, "CAN Master Mode");
+		  disp1color_printf(1, 21, FONTID_6X8M, "Задание =  %0.2f %%", (float)Sin * 100.0f / (float)U2_5V);
 			iSin = (float)Sin * 20.0f / (float)U2_5V;
 			adcTerm = getADCresult(2);
 			Temp_cels = Temperature_Compute(adcTerm);
 			iSinCor = (float)CorrectTemperature(Temp_cels) * 20 / (float)U2_5V;	
-		  disp1color_printf(1, 21, FONTID_6X8M, "Задание =  %0.2f A ", iSin);
-			disp1color_printf(1, 31, FONTID_6X8M, "Темп. корр. =  %0.2f A ", iSinCor);		
+		  disp1color_printf(1, 31, FONTID_6X8M, "Задание =  %0.2f A ", iSin);
+			disp1color_printf(1, 41, FONTID_6X8M, "Темп. корр. =  %0.2f A ", iSinCor);		
 			adcI = getADCresult(1);
 			Temp_adcI_float_B = (float)adcI * 31.0f/4096.0f;
-			disp1color_printf(1, 41, FONTID_6X8M, "I-LOAD =  %0.2f A", Temp_adcI_float_B);
+			disp1color_printf(1, 51, FONTID_6X8M, "I-LOAD =  %0.2f A", Temp_adcI_float_B);
 	  
 	}
 	else
 	{
-		disp1color_printf(1, 0, FONTID_6X8M, "Slave Mode");
+		disp1color_printf(1, 0, FONTID_6X8M, "CAN Slave Mode");
 		if(!Error_CAN)
 		{
 			EncoderMode[Disp_ControlPWM] = Encoder_get_position();
