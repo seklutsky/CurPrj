@@ -60,8 +60,8 @@ void display_ControlPWM(void)
 	uint16_t Temp_dac;
 	float VA_IN;
 	
-		SET_STB_OUT_PORT;
-		CLR_VOFF_OUT_PORT;
+		CLR_STB_OUT_PORT;
+		SET_VOFF_OUT_PORT;
 		DAC_set_level(1,DAC_MAX);
 		disp1color_printf(1, 0, FONTID_6X8M, "VL-IN(PWM) Control");
 	
@@ -104,8 +104,8 @@ void display_ControlDAC1(void)
 	uint16_t Temp_pwm;
 	float Temp_PWM_proc;
 	
-	SET_STB_OUT_PORT;
-	CLR_VOFF_OUT_PORT;
+	CLR_STB_OUT_PORT;
+	SET_VOFF_OUT_PORT;
 	PWM_set(100);
 	
 	disp1color_printf(1, 0, FONTID_6X8M, "VA-IN Control");
@@ -287,8 +287,8 @@ uint16_t dysplayTestPwm;
 
 void display_TestMode1(void)
 {
-			SET_STB_OUT_PORT;
-			CLR_VOFF_OUT_PORT;
+			CLR_STB_OUT_PORT;
+			SET_VOFF_OUT_PORT;
 
 		disp1color_printf(1, 0, FONTID_6X8M, "Test Mode");
 	  dysplayTestPwm = Encoder_get_position();
@@ -300,8 +300,8 @@ void display_TestMode1(void)
 
 void display_TestMode2(void)
 {	
-			SET_STB_OUT_PORT;
-			CLR_VOFF_OUT_PORT;
+			CLR_STB_OUT_PORT;
+			SET_VOFF_OUT_PORT;
 
 	  if(!Error_CAN)
 		{

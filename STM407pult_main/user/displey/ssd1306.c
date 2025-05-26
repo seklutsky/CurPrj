@@ -462,9 +462,9 @@ static void GPIO_init(void)
   GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_UP;
   
 #if (ResetPinUsed)      // Включено управление ножкой reset ssd1306
-  gpio_PortClockStart(Reset_Port);
-  GPIO_InitStruct.GPIO_Pin = Reset_Pin;
-  GPIO_Init(Reset_Port, &GPIO_InitStruct);
+//  gpio_PortClockStart(Reset_Port);
+//  GPIO_InitStruct.GPIO_Pin = Reset_Pin;
+//  GPIO_Init(Reset_Port, &GPIO_InitStruct);
 #endif
   
 #if (CSPinUsed)

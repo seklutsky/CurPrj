@@ -14,6 +14,7 @@
 #include <stm32f4xx_spi.h>
 #include <stm32f4xx_dac.h>
 #include <stm32f4xx_adc.h>
+#include "gpio_init.h"
 #include <misc.h>
 #include <types.h>
 #include "var.h"
@@ -37,7 +38,6 @@
 #include "encoder.h"
 #include "pwm.h"
 #include "run.h"
-#include "gpio_init.h"
 #include "temperature.h"
 #include "math_func_log.h"
 #include "buttons.h"

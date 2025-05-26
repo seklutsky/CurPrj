@@ -1,12 +1,12 @@
 #include "include.h"
 #include "boot.h"
 
-
+RCC_ClocksTypeDef       RCC_Clocks;
 
 
 int main()
 {
-RCC_ClocksTypeDef       RCC_Clocks;
+
 	
 		SystemInit();
 		SystemCoreClockUpdate();
