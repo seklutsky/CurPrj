@@ -2,6 +2,7 @@
 
 uint16_t CanMaster = 0, CanMaster_= 0;
 uint16_t TestMode = 0, TestMode_= 0;
+uint16_t AutoMode = 1;
 uint16_t PwrEn; 
 uint16_t TestPWM_Channel;
 
@@ -36,10 +37,10 @@ void buttons_counterClr(void)
 	buttonCounter = 0;
 }
 
-
+/*
 void buttons_tranfer(void)
 {
-	if(button_SW_AUTO != 0) 
+	if(!AutoMode) 
 	{		
 		button_SW8 = button_SW8<<1;
 		if(SW8) button_SW8 |= 1;		
@@ -68,7 +69,7 @@ void buttons_tranfer(void)
 		}	
   }
 }
-
+*/
 
 void buttons_read(void)
 {
@@ -95,6 +96,14 @@ void buttons_read(void)
 	button_SW_AUTO = button_SW_AUTO<<1;
 	if(SW_AUTO) button_SW_AUTO |= 1;
 	
+	if(button_SW_AUTO == 0xFFFF)
+	{
+		 AutoMode = 0;
+	}
+	else if(button_SW_AUTO == 0x0000)
+	{
+		 AutoMode = 1;
+	}
 	
 	
 	button_ENC_BUTTON = button_ENC_BUTTON<<1;

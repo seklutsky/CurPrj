@@ -67,24 +67,37 @@ void display_ControlPWM(void)
 	
 	if(CanMaster == 0) 
 	{	
-		EncoderMode[Disp_ControlPWM] = Encoder_get_position();
-		Temp_pwm = (uint16_t)((float)(EncoderMode[Disp_ControlPWM] * 100.0f) / (float)ENCODER_MAX);
-		PWM_set(Temp_pwm);
-		Temp_PWM_proc = (float)Temp_pwm;
-		disp1color_printf(1, 10, FONTID_6X8M, "PWM = %0.0f %%", Temp_PWM_proc);
-		adcI = getADCresult(1);
-		Temp_adcI_float_B = (float)adcI * 31.0f/4096.0f;
-		disp1color_printf(1, 20, FONTID_6X8M, "I-LOAD =  %0.2f A", Temp_adcI_float_B);
-		adcIP48 = getADCresult(0);
-		Temp_adcIP48_float_B = (float)adcIP48 * 31.0f/4096.0f;
-		disp1color_printf(1, 30, FONTID_6X8M, "I-P48 =  %0.2f A", Temp_adcIP48_float_B);	
-		Temp_dac = (uint16_t)((float)(EncoderMode[Disp_ControlDAC1] * DAC_MAX) / (float)ENCODER_MAX);
-		VA_IN = (float)Temp_dac * VOLT_MAX/4096.0f;
-		disp1color_printf(1, 40, FONTID_6X8M, "ЦАП VA-IN =  %0.2f V", VA_IN);
-		disp1color_printf(1, 50, FONTID_6X8M, "V-LED=%0.1f V-BUS=%0.1f", (float)V_led*63.3/256.0, (float)V_bus*63.3/256.0);
+		if(AutoMode) 
+		{
+			EncoderMode[Disp_ControlPWM] = Encoder_get_position();
+			Temp_pwm = (uint16_t)((float)(EncoderMode[Disp_ControlPWM] * 100.0f) / (float)ENCODER_MAX);
+			PWM_set(Temp_pwm);
+			Temp_PWM_proc = (float)Temp_pwm;
+			disp1color_printf(1, 10, FONTID_6X8M, "PWM = %0.0f %%", Temp_PWM_proc);
+			adcI = getADCresult(1);
+			Temp_adcI_float_B = (float)adcI * 31.0f/4096.0f;
+			disp1color_printf(1, 20, FONTID_6X8M, "I-LOAD =  %0.2f A", Temp_adcI_float_B);
+			adcIP48 = getADCresult(0);
+			Temp_adcIP48_float_B = (float)adcIP48 * 31.0f/4096.0f;
+			disp1color_printf(1, 30, FONTID_6X8M, "I-P48 =  %0.2f A", Temp_adcIP48_float_B);	
+			Temp_dac = (uint16_t)((float)(EncoderMode[Disp_ControlDAC1] * DAC_MAX) / (float)ENCODER_MAX);
+			VA_IN = (float)Temp_dac * VOLT_MAX/4096.0f;
+			disp1color_printf(1, 40, FONTID_6X8M, "ЦАП VA-IN =  %0.2f V", VA_IN);
+			disp1color_printf(1, 50, FONTID_6X8M, "V-LED=%0.1f V-BUS=%0.1f", (float)V_led*63.3/256.0, (float)V_bus*63.3/256.0);
+		}
+		else
+		{
+			disp1color_printf(1, 10, FONTID_6X8M, "В режиме MANUAL");
+			disp1color_printf(1, 20, FONTID_6X8M, "ШИМ выставляется");
+			disp1color_printf(1, 30, FONTID_6X8M, "тумблером VL(0 или 1)");
+			disp1color_printf(1, 40, FONTID_6X8M, "переключите в AUTO");
+			disp1color_printf(1, 50, FONTID_6X8M, "для управления ручкой");			
+		}
 	}
 	else
 	{
+		PWM_set(0);
+		DAC_set_level(1,0);
 		disp1color_printf(1, 10, FONTID_6X8M, "Источник SLAVE");
     disp1color_printf(1, 20, FONTID_6X8M, "и не регулируется");
 		disp1color_printf(1, 30, FONTID_6X8M, "внешними сигналами");
@@ -128,6 +141,8 @@ void display_ControlDAC1(void)
 	}		
 	else
 	{
+		PWM_set(0);
+		DAC_set_level(1,0);
 		disp1color_printf(1, 10, FONTID_6X8M, "Источник SLAVE");
     disp1color_printf(1, 20, FONTID_6X8M, "и не регулируется");
 		disp1color_printf(1, 30, FONTID_6X8M, "внешними сигналами");
@@ -209,6 +224,9 @@ void display_CAN(void)
 	
 	if(CanMaster == 1)
 	{
+			PWM_set(0);
+			DAC_set_level(1,0);
+		
 		  EncoderMode[Disp_ControlPWM] = Encoder_get_position();			
 		  Sin = (uint16_t)((float)(EncoderMode[Disp_ControlPWM] * U2_5V) / (float)ENCODER_MAX);
 			disp1color_printf(1, 10, FONTID_6X8M, "CAN Master Mode");
@@ -432,6 +450,12 @@ void display_TestMode(void)
 void display_NormalMode(void)
 {
 TDispMode Num_encoder;
+	
+			if(CanMaster == 1)
+			{
+					PWM_set(0);
+					DAC_set_level(1,0);
+			}
 	
 			TestMode_ = 0;
 	

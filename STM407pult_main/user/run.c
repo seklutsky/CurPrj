@@ -31,7 +31,7 @@ void run_normalMode(void)
 void Run(void)
 {
 	buttons_read();
-	if(!TestMode) buttons_tranfer();
+//	if(!TestMode) buttons_tranfer();
 	
 	if(StartCounter >= START_TIME ) 
 	{	
