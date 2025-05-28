@@ -63,6 +63,7 @@ void display_ControlPWM(void)
 		CLR_STB_OUT_PORT;
 		SET_VOFF_OUT_PORT;
 		DAC_set_level(1,DAC_MAX);
+	  EncoderMode[Disp_ControlDAC1] = ENCODER_MAX;
 		disp1color_printf(1, 0, FONTID_6X8M, "VL-IN(PWM) Control");
 	
 	if(CanMaster == 0) 
@@ -120,8 +121,9 @@ void display_ControlDAC1(void)
 	CLR_STB_OUT_PORT;
 	SET_VOFF_OUT_PORT;
 	PWM_set(100);
-	
+	EncoderMode[Disp_ControlPWM] = ENCODER_MAX;
 	disp1color_printf(1, 0, FONTID_6X8M, "VA-IN Control");
+	
 	if(CanMaster == 0) 
 	{		
 		EncoderMode[Disp_ControlDAC1] = Encoder_get_position();
@@ -227,9 +229,9 @@ void display_CAN(void)
 			PWM_set(0);
 			DAC_set_level(1,0);
 		
-		  EncoderMode[Disp_ControlPWM] = Encoder_get_position();			
-		  Sin = (uint16_t)((float)(EncoderMode[Disp_ControlPWM] * U2_5V) / (float)ENCODER_MAX);
-			disp1color_printf(1, 10, FONTID_6X8M, "CAN Master Mode");
+		  EncoderMode[Disp_CAN] = Encoder_get_position();			
+		  Sin = (uint16_t)((float)(EncoderMode[Disp_CAN] * U2_5V) / (float)ENCODER_MAX);
+			disp1color_printf(1, 10, FONTID_6X8M, "CAN Slave");
 		  disp1color_printf(1, 21, FONTID_6X8M, "Задание =  %0.2f %%", (float)Sin * 100.0f / (float)U2_5V);
 			iSin = (float)Sin * 20.0f / (float)U2_5V;
 			adcTerm = getADCresult(2);
@@ -244,11 +246,13 @@ void display_CAN(void)
 	}
 	else
 	{
-		disp1color_printf(1, 0, FONTID_6X8M, "CAN Slave Mode");
+		disp1color_printf(1, 0, FONTID_6X8M, "CAN Master");
 		if(!Error_CAN)
-		{
-			EncoderMode[Disp_ControlPWM] = Encoder_get_position();
-			Temp_pwm = (uint16_t)((float)(EncoderMode[Disp_ControlPWM] * 100.0f) / (float)ENCODER_MAX);
+		{			
+			DAC_set_level(1,DAC_MAX);
+			EncoderMode[Disp_ControlDAC1] = ENCODER_MAX;
+			EncoderMode[Disp_CAN] = Encoder_get_position();
+			Temp_pwm = (uint16_t)((float)(EncoderMode[Disp_CAN] * 100.0f) / (float)ENCODER_MAX);
 			PWM_set(Temp_pwm);
 			Temp_PWM_proc = (float)Temp_pwm;
 			disp1color_printf(1, 11, FONTID_6X8M, "PWM = %0.0f %%", Temp_PWM_proc);			
@@ -464,9 +468,22 @@ TDispMode Num_encoder;
 			buttons_counterClr();
 			
 			Num_encoder = DisplayControlMode;
-			if(Num_encoder == Disp_CAN) Num_encoder = Disp_ControlPWM;
+//			if(Num_encoder == Disp_CAN) Num_encoder = Disp_ControlPWM;
 	
-			if(DisplayControlMode_ != DisplayControlMode) Encoder_set_position(EncoderMode[Num_encoder]);
+			if(DisplayControlMode_ != DisplayControlMode) 
+			{
+				  if(DisplayControlMode == Disp_ControlPWM)
+					{
+							PWM_set(0);
+							EncoderMode[Disp_ControlPWM] = 0;
+					}
+					if(DisplayControlMode == Disp_ControlDAC1)
+					{
+							DAC_set_level(1,0);
+							EncoderMode[Disp_ControlDAC1] = 0;						
+					}
+					Encoder_set_position(EncoderMode[Num_encoder]);
+			}
 			DisplayControlMode_ = DisplayControlMode;
 				
 			switch(DisplayControlMode)

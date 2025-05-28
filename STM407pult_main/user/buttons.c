@@ -113,11 +113,11 @@ void buttons_read(void)
 		
 	if(button_S_MASTER == 0xFFFF) 
 	{
-		CanMaster = 0;
+		CanMaster = 1;
 	}
 	else if(button_S_MASTER == 0)
 	{
-		CanMaster = 1;
+		CanMaster = 0;
 	}
 	
 	if(button_SW_TEST == 0xFFFF) 
