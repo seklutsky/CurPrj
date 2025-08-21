@@ -40,13 +40,13 @@ void Timer_5_init(void)  				// 32 bit timer!
   TIM_OCInitStructure5.TIM_OutputState = TIM_OutputState_Enable;
 //  TIM_OCInitStructure5.TIM_OutputNState = TIM_OutputNState_Enable;
   TIM_OCInitStructure5.TIM_Pulse = 0;
-  TIM_OCInitStructure5.TIM_OCPolarity = TIM_OCNPolarity_High;
+  TIM_OCInitStructure5.TIM_OCPolarity = TIM_OCPolarity_High;
 //  TIM_OCInitStructure5.TIM_OCNPolarity = TIM_OCNPolarity_High;
   TIM_OCInitStructure5.TIM_OCIdleState = TIM_OCIdleState_Set;
 //  TIM_OCInitStructure5.TIM_OCNIdleState = TIM_OCNIdleState_Set;
   TIM_OC1Init(TIM5, &TIM_OCInitStructure5);
 
-  TIM_OCInitStructure5.TIM_OCPolarity = TIM_OCNPolarity_High;
+  TIM_OCInitStructure5.TIM_OCPolarity = TIM_OCPolarity_High;
   TIM_OC2Init(TIM5, &TIM_OCInitStructure5);
 
 

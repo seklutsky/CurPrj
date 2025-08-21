@@ -41,13 +41,13 @@ void Timer_8_init(void)  				// 32 bit timer!
   TIM_OCInitStructure8.TIM_OutputState = TIM_OutputState_Enable;
 //  TIM_OCInitStructure8.TIM_OutputNState = TIM_OutputNState_Enable;
   TIM_OCInitStructure8.TIM_Pulse = 0;
-  TIM_OCInitStructure8.TIM_OCPolarity = TIM_OCNPolarity_High;
+  TIM_OCInitStructure8.TIM_OCPolarity = TIM_OCPolarity_High;
 //  TIM_OCInitStructure8.TIM_OCNPolarity = TIM_OCNPolarity_High;
   TIM_OCInitStructure8.TIM_OCIdleState = TIM_OCIdleState_Set;
 //  TIM_OCInitStructure8.TIM_OCNIdleState = TIM_OCNIdleState_Set;
   TIM_OC1Init(TIM8, &TIM_OCInitStructure8);
 
-	TIM_OCInitStructure8.TIM_OCPolarity = TIM_OCNPolarity_High;
+	TIM_OCInitStructure8.TIM_OCPolarity = TIM_OCPolarity_High;
   TIM_OC2Init(TIM8, &TIM_OCInitStructure8);
 
   // Automatic Output enable, Break, dead time and lock configuration

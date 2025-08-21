@@ -81,8 +81,8 @@
 
 
 //42 MHz tik (0.0238 mkS)
-#define PWM_100 		256  			//0.0238 * 256 * 2 = 12.1856 mkS => 82.06 Khz
-#define	OFFSET_PWM		PWM_100*2/6////-15////= 70 
+#define PWM_100 		256  			           //0.0238 * 256 * 2 = 12.1856 mkS => 82.06 Khz
+#define	OFFSET_PWM		PWM_100*2/6       ////-15////= 70 
 #define PWM_MAX 		PWM_100-DTM-1 
 
 
@@ -90,11 +90,11 @@
 #define PIREG_I_GAIN_I   	   		16000
 
 
-#define PIREG_P_GAIN_SHIFT_I 		-1//-1
-#define PIREG_I_GAIN_SHIFT_I   	0//-1
+#define PIREG_P_GAIN_SHIFT_I 		-1   //-1
+#define PIREG_I_GAIN_SHIFT_I   	0    //-1
 		
-//#define PIREG_P_GAIN_SHIFT_I 		-2//-2
-//#define PIREG_I_GAIN_SHIFT_I   	1//1
+//#define PIREG_P_GAIN_SHIFT_I 		-2  //-2
+//#define PIREG_I_GAIN_SHIFT_I   	1   //1
 
 #define F_TRM_MAX					((MaxTemp+273)<<16)
 #define F_TRM_MIN					((MinTemp+273)<<16)

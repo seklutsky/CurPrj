@@ -37,14 +37,14 @@ void Timer_4_init(void)  				// 32 bit timer!
   TIM_OCInitStructure4.TIM_OutputState = TIM_OutputState_Enable;
 //  TIM_OCInitStructure4.TIM_OutputNState = TIM_OutputNState_Enable;
   TIM_OCInitStructure4.TIM_Pulse = 0;
-  TIM_OCInitStructure4.TIM_OCPolarity = TIM_OCNPolarity_High;
+  TIM_OCInitStructure4.TIM_OCPolarity = TIM_OCPolarity_High;
 //  TIM_OCInitStructure4.TIM_OCNPolarity = TIM_OCNPolarity_High;
   TIM_OCInitStructure4.TIM_OCIdleState = TIM_OCIdleState_Set;
 //  TIM_OCInitStructure4.TIM_OCNIdleState = TIM_OCNIdleState_Set;
   TIM_OC1Init(TIM4, &TIM_OCInitStructure4);
 
 
-	TIM_OCInitStructure4.TIM_OCPolarity = TIM_OCNPolarity_High;
+	TIM_OCInitStructure4.TIM_OCPolarity = TIM_OCPolarity_High;
   TIM_OC2Init(TIM4, &TIM_OCInitStructure4);
 
 
