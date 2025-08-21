@@ -1,7 +1,6 @@
 #include "include.h"
 
 typedef char byte;
-extern uint8_t counter;
 TIM_TimeBaseInitTypeDef TIM_InitStruct_2;
 TIM_OCInitTypeDef TIM_OCInitStructure2 ;
 TIM_ICInitTypeDef TIM_ICInitStructure2 ;
@@ -46,13 +45,13 @@ void Timer_2_init(void)  				// 32 bit timer!
   TIM_OCInitStructure2.TIM_OutputState = TIM_OutputState_Enable;
 //  TIM_OCInitStructure2.TIM_OutputNState = TIM_OutputNState_Enable;
   TIM_OCInitStructure2.TIM_Pulse = 0;
-  TIM_OCInitStructure2.TIM_OCPolarity = TIM_OCNPolarity_High;
+  TIM_OCInitStructure2.TIM_OCPolarity = TIM_OCPolarity_High;
 //  TIM_OCInitStructure2.TIM_OCNPolarity = TIM_OCNPolarity_High;
   TIM_OCInitStructure2.TIM_OCIdleState = TIM_OCIdleState_Set;
 //  TIM_OCInitStructure2.TIM_OCNIdleState = TIM_OCNIdleState_Set;	
   TIM_OC1Init(TIM2, &TIM_OCInitStructure2);
 		
-	TIM_OCInitStructure2.TIM_OCPolarity = TIM_OCNPolarity_High;
+	TIM_OCInitStructure2.TIM_OCPolarity = TIM_OCPolarity_Low;
   TIM_OC2Init(TIM2, &TIM_OCInitStructure2);
 	
 

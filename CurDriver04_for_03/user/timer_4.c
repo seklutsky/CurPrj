@@ -1,7 +1,7 @@
 #include "include.h"
 
 
-extern uint8_t counter;
+
 TIM_TimeBaseInitTypeDef TIM_InitStruct_4;
 TIM_OCInitTypeDef TIM_OCInitStructure4 ;
 TIM_ICInitTypeDef TIM_ICInitStructure4 ;
@@ -37,14 +37,14 @@ void Timer_4_init(void)  				// 32 bit timer!
   TIM_OCInitStructure4.TIM_OutputState = TIM_OutputState_Enable;
 //  TIM_OCInitStructure4.TIM_OutputNState = TIM_OutputNState_Enable;
   TIM_OCInitStructure4.TIM_Pulse = 0;
-  TIM_OCInitStructure4.TIM_OCPolarity = TIM_OCNPolarity_High;
+  TIM_OCInitStructure4.TIM_OCPolarity = TIM_OCPolarity_High;
 //  TIM_OCInitStructure4.TIM_OCNPolarity = TIM_OCNPolarity_High;
   TIM_OCInitStructure4.TIM_OCIdleState = TIM_OCIdleState_Set;
 //  TIM_OCInitStructure4.TIM_OCNIdleState = TIM_OCNIdleState_Set;
   TIM_OC1Init(TIM4, &TIM_OCInitStructure4);
 
 
-	TIM_OCInitStructure4.TIM_OCPolarity = TIM_OCNPolarity_High;
+	TIM_OCInitStructure4.TIM_OCPolarity = TIM_OCPolarity_Low;
   TIM_OC2Init(TIM4, &TIM_OCInitStructure4);
 
 
@@ -81,11 +81,6 @@ uint16_t TestTim4;
  void TIM4_IRQHandler(void)
 {
 		TIM_ClearITPendingBit(TIM4, TIM_IT_CC3);		
-		TestTim4=TIM5->CNT;
-		TIM5->CNT = TIM4->CNT+OFFSET_PWM;
-		TIM8->CNT = TIM4->CNT+OFFSET_PWM*2;	
-		TIM5->CR1 |= TIM_CR1_CEN;
-		TIM8->CR1 |= TIM_CR1_CEN;	
 		TIM_ITConfig(TIM4, TIM_IT_CC3, DISABLE);
 }
 

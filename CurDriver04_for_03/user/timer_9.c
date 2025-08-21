@@ -1,12 +1,10 @@
 #include "include.h"
 
 
-extern uint8_t counter;
-uint16_t Period_all,Period1,Period1_,Period2,Period2_, ProcPWM;
-uint16_t Period_all_MAX=20000;
+
 TIM_TimeBaseInitTypeDef TIM_InitStruct_9;
 
-__STATIC_INLINE int16_t div_r(int16_t x, int16_t y);
+
 
 TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure9;
 TIM_OCInitTypeDef TIM_OCInitStructure9;
@@ -14,7 +12,7 @@ TIM_ICInitTypeDef TIM_ICInitStructure9;
 TIM_BDTRInitTypeDef TIM_BDTRInitStructure9;
 extern GPIO_InitTypeDef  GPIO_InitStructure;
 extern uint8_t NotTest, NoCheck, Reg_Start;
-char fall = 0;
+
 int intc = 0; 
 //==========================================================================================================================================
 void Timer_9_init(void)  				// 32 bit timer!
@@ -76,8 +74,6 @@ uint16_t ProcPWM_Test = 0x7FFF;
 					TIM9->CNT = 0;
 					if(TIM9->SR & TIM_IT_Update)	{
 								TIM_ClearITPendingBit(TIM9, TIM_IT_Update);
-								//if(fall) ProcPWM = 0;
-								//else ProcPWM = FRAC16(0.999999);	
 								if(1&(GPIOA->IDR>>2)) ProcPWM = 0;	
 								else  ProcPWM = 0x7FFF;						
 					}
@@ -102,11 +98,6 @@ uint16_t ProcPWM_Test = 0x7FFF;
 								if(!LineUP) ProcPWM = 0x7FFF;	
 								else if(LineDown) ProcPWM = 0;
 								else{
-								//if(Period2_ > 150) 
-								//	Period2 = Period2_;
-								//if( (Period1_ + Period2) > Period_all_MAX ) Period1 = 0;
-								//else 
-								//	Period1 = Period1_;
 											Period_all = Period1_ + Period2_; // 								
 											ProcPWM = div_r(Period2_,Period_all);
 								}
@@ -118,8 +109,5 @@ uint16_t ProcPWM_Test = 0x7FFF;
 
 
 
-__STATIC_INLINE int16_t div_r(int16_t x, int16_t y)
-{
-    return (uint16_t) (((uint32_t) (x*0xFFFF) / (y)) >> 1 );
-}
+
 

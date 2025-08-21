@@ -1,10 +1,10 @@
 #define TCOMP									1 //1 - on, 0 - off
 
-#define I_MAX									20 //1 to 20
+#define I_MAX									12 //1 to 16.5
 
-#define U_MAX_OUT_VOLT				50
-#define U_MAX_VOLT						60
-#define U_MIN_VOLT						20
+#define U_MAX_OUT_VOLT				15
+#define U_MAX_VOLT						16
+#define U_MIN_VOLT						9
 #define SEC_WAIT_01						60  //60 = 6 secund
 #define DatTemp 							1   
 
@@ -42,10 +42,10 @@
 #define B_T 									((1<<RAZ_D)/B_TEMP)
 #define	TN_F16								((1<<(RAZ_BASE+RAZ_Tn))/TN)
 
-#define I_MAX_AMPER						24  
-#define I_MAX_ABS						  31
+#define I_MAX_AMPER						15  
+#define I_MAX_ABS						  16.5
 
-#define deltaI								0.4
+#define deltaI								0.2
 #define SEC_WAIT_01_GIST				1   //1 = 0.1 secunda
 
 #define ADC_SCALE					4096
@@ -56,18 +56,15 @@
 #define U5V 			(5.0*ADC_SCALE/3.3)
 #define U25V 			(U5V/2) //3103 (3106-3108)
 
-#define I_MAX_MEASUREMENT (U25V*I_MAX_ABS/ADC_SCALE) //3103*31/4096 = 23.48 ампера максимально измер€емый заданный ток
+#define I_MAX_MEASUREMENT (U25V*I_MAX_ABS/ADC_SCALE) //3103*16.5/4096 = 12.5 ампера максимально измер€емый заданный ток
 
-#define I_MAX_REG 				(I_MAX*0x7FFF/I_MAX_MEASUREMENT)	// 20/23.48 = 0.85
-#define I_MAX_CORRECT			(I_MAX*ADC_SCALE/I_MAX_ABS)	// 20/31 * 4096 = 2642
+#define I_MAX_REG 				(I_MAX*0x7FFF/I_MAX_MEASUREMENT)	// 12/12.5 = 0.96
+#define I_MAX_CORRECT			(I_MAX*ADC_SCALE/I_MAX_ABS)	// 12/16.5 * 4096 = 2979
 #define I_20A							(20*ADC_SCALE/I_MAX_ABS)// 2642
 
-//#define I_MAX_REAL				3723	//(15 A)	//4096~16.5
-//#define DELTA_I						50
-
-#define Uvh_MIN						U_MIN_VOLT*ADC_SCALE/63.3 //
-#define Uvh_MAX						U_MAX_VOLT*ADC_SCALE/63.3 //
-#define Uvyh_MAX				  U_MAX_OUT_VOLT*ADC_SCALE/63.3 
+#define Uvh_MIN						U_MIN_VOLT*ADC_SCALE/29.91 //
+#define Uvh_MAX						U_MAX_VOLT*ADC_SCALE/29.91 //
+#define Uvyh_MAX				  U_MAX_OUT_VOLT*ADC_SCALE/29.91 
 
 
 
@@ -82,7 +79,7 @@
 
 //42 MHz tik (0.0238 mkS)
 #define PWM_100 		256  			//0.0238 * 256 * 2 = 12.1856 mkS => 82.06 Khz
-#define	OFFSET_PWM		PWM_100*2/6////-15////= 70 
+#define	OFFSET_PWM		PWM_100*2/4///= 82 (12.2 mkS) or 164 kHz
 #define PWM_MAX 		PWM_100-DTM-1 
 
 
@@ -90,8 +87,8 @@
 #define PIREG_I_GAIN_I   	   		16000
 
 
-#define PIREG_P_GAIN_SHIFT_I 		-1//-1
-#define PIREG_I_GAIN_SHIFT_I   	0//-1
+#define PIREG_P_GAIN_SHIFT_I 		0//-1//-1
+#define PIREG_I_GAIN_SHIFT_I   	3//0//-1
 		
 //#define PIREG_P_GAIN_SHIFT_I 		-2//-2
 //#define PIREG_I_GAIN_SHIFT_I   	1//1
@@ -122,14 +119,14 @@
 //#define 	SET_ERROR	GPIOC->ODR |=  (1<<9)
 //#define 	CLR_ERROR	GPIOC->ODR &= ~(1<<9)
 
-#define 	SET_ERROR	GPIOC->MODER |=  (1<<9*2)
-#define 	CLR_ERROR	GPIOC->MODER &= ~(1<<9*2)
+#define 	SET_ERROR	GPIOC->MODER |=  (1<<7*2)
+#define 	CLR_ERROR	GPIOC->MODER &= ~(1<<7*2)
 
 #define VOFF_IN_PORT ((GPIOC->IDR)&(1<<4))  
 #define STB_IN_PORT ((GPIOC->IDR)&(1<<5))   //Tumbler
 #define ERR_IN_PORT ((GPIOC->IDR)&(1<<3))
-#define MASTER_IN_PORT ((GPIOA->IDR)&(1<<3))
-#define TEST_IN_PORT  ((GPIOD->IDR)&(1<<2))
+#define MASTER_IN_PORT ((GPIOA->IDR)&(1<<2))
+//#define TEST_IN_PORT  ((GPIOD->IDR)&(1<<2))
 
 //#define VL_IN_PORT (GPIOC->IDR)&(1<<6) 		//PWM-IN
 

@@ -469,16 +469,6 @@
               <FilePath>.\user\timer_4.h</FilePath>
             </File>
             <File>
-              <FileName>timer_5.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\user\timer_5.c</FilePath>
-            </File>
-            <File>
-              <FileName>timer_5.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\user\timer_5.h</FilePath>
-            </File>
-            <File>
               <FileName>adc.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\user\adc.c</FilePath>
@@ -507,16 +497,6 @@
               <FileName>can_1.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\user\can_1.h</FilePath>
-            </File>
-            <File>
-              <FileName>timer_9.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\user\timer_9.c</FilePath>
-            </File>
-            <File>
-              <FileName>timer_9.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\user\timer_9.h</FilePath>
             </File>
           </Files>
         </Group>

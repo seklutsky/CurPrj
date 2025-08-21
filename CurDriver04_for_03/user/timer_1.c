@@ -29,7 +29,7 @@ void Timer_1_init(void)  				// 32 bit timer!
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_Init(GPIOA, &GPIO_InitStructure);	
 	
 	GPIO_PinAFConfig(GPIOA, GPIO_PinSource8, GPIO_AF_TIM1);
@@ -47,13 +47,13 @@ void Timer_1_init(void)  				// 32 bit timer!
   TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
  // TIM_OCInitStructure.TIM_OutputNState = TIM_OutputNState_Enable;
   TIM_OCInitStructure.TIM_Pulse = 0;
-  TIM_OCInitStructure.TIM_OCPolarity = TIM_OCNPolarity_High;
+  TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
 //  TIM_OCInitStructure.TIM_OCNPolarity = TIM_OCPolarity_High;
   TIM_OCInitStructure.TIM_OCIdleState = TIM_OCIdleState_Set;
  // TIM_OCInitStructure.TIM_OCNIdleState = TIM_OCNIdleState_Set;
   TIM_OC1Init(TIM1, &TIM_OCInitStructure);
 
-	TIM_OCInitStructure.TIM_OCPolarity = TIM_OCNPolarity_High;
+	TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_Low;
 	TIM_OC2Init(TIM1, &TIM_OCInitStructure);
 
   // Automatic Output enable, Break, dead time and lock configuration

@@ -3,14 +3,14 @@ ADC_InitTypeDef ADC_InitStructure;
 ADC_CommonInitTypeDef adc_init, ADC_CommonInitStructure;
 float current, val_f1, val_f2;
 int i, l;
-s16 val1, val2, val3,val4,val5,val6, Ibus, V_led, V_bus, F_com, U_output;
+int16_t val1, val2, val3,val4,val5,val6, Ibus, V_led, V_bus, F_com, U_output;
 uint16_t F_trm, F_trm_,F_trm__, ARR_F_TRM[32768], F5V = U5V, deltaT = 0;
 uint32_t ACC_F_TRM;
 uint16_t i_ARR=0;
-u16 current_X10mA, voltage_X10mV;
+uint16_t current_X10mA, voltage_X10mV;
 float voltage;
-s16 median, tmp_, CURRENT[32], VOLTAGE[32];
-u8 temp1, temp2;
+int16_t median, tmp_, CURRENT[32], VOLTAGE[32];
+char temp1, temp2;
 extern GPIO_InitTypeDef  GPIO_InitStructure;
 long int current_sum1 = 0, current_sum2 = 0, current_sum = 0,ADC_counter,ADC_counter1,ADC_counter2,ADC_counter3,ADC_counter4,ADC_counter5;
 char ADC_ch=0,_ADC_ch=1,ADC_INIT_DONE=0;
@@ -92,14 +92,9 @@ void ADC_init(void)
 			
 			ADC_INIT_DONE = 1;
 			
-	//		StartADC;
-
-			
-
-
 }
 
-extern uint8_t NotTest, NoCheck, Reg_Start;
+extern uint8_t NotTest, NoCheck;
 //=============================================================================
 void ADC_IRQHandler(void)
 {
@@ -118,7 +113,6 @@ void ADC_IRQHandler(void)
 									
 													// Freemaster Recoder
 													FMSTR_Recorder();
-													//Reg_Start = 1;
 									break;							
 									case 1: //CH_V_BUS
 									        U_input = ADC1->DR;

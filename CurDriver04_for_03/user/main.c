@@ -24,7 +24,7 @@ float Array[ArrS][ArrT] = {
    
 };
 
-float Tn=10,Tv=10,Sn=0,Sv=0,Snm,Svm,Snb,Svb,S1,S2;
+
 
 char can_send=0, can_end = 100, Master_CAN = 0;//Master/slave;
 
@@ -80,13 +80,13 @@ GPIO_InitTypeDef  GPIO_InitStructure_;
 USART_InitTypeDef USART_InitStructure;
 NVIC_InitTypeDef  NVIC_InitStructure;
 GPIO_InitTypeDef  GPIO_InitStructure;
-uint8_t TestLeds = 0, counter, NotTest = 0, NoCheck = 0, Reg_Start = 0, G1=0,G2=0,G3=0,G4=0,G5=0,G6=0, G_ALL=0, STB_ON, HL1 = 1;
-uint16_t DeadTime, PWM1=PWM_50,PWM2=PWM_50,PWM3=PWM_50,PWM4=PWM_50,PWM5=PWM_50, PWM6=PWM_50,PWM_ALL;
+
+uint16_t DeadTime, PWM1=PWM_50,PWM2=PWM_50,PWM3=PWM_50,PWM4=PWM_50,PWM_ALL;
 uint16_t  i_max_real = I_MAX_REAL, U_min = Uvh_MIN, U_max = Uvh_MAX, Uvyh_max = Uvyh_MAX, delta_i = DELTA_I;
 
 extern char RegOn, UprOn, Error_out;
 extern uint16_t counter7, U_big, i_real, i_desired, UprADC, U_input,i_max_desired;
-char PWM_ALL_ADD[8], PWR_ON, Led1,Led2,Led3,Led4,LedRun, blink, ExternalError, ErrorOn;
+
 short Stop_ModeCounter=0, CAN_Counter=0, Start_time=0, End_Start = 2;
 s16  Napr_Vyh_Min = NAPR_MIN;
 
@@ -102,9 +102,12 @@ extern uint16_t Period_all,Period1,Period1_,Period2,Period2_, ProcPWM;
 
 float float_m = m, float_I0 = I0, float_D0 = D0, float_tmf = tmf, float_Ieq = Ieq, float_t_cels, float_Sout, float_Sin;
 // float_Sout = (float_I0 + (float_Ieq*float_Sin-float_I0)*(float_D0+float_m*float_tmf)/(float_D0+float_m*float_t_cels) )/float_Ieq;
-char iii,it,is;
+
 
 extern short CounterTestOn;
+
+char PWM_ALL_ADD[8], PWR_ON, Led1,Led2,Led3,Led4,LedRun, blink, ExternalError, ErrorOn;
+uint8_t NotTest = 0, NoCheck = 0, G1=0,G2=0,G3=0,G4=0, G_ALL=0, STB_ON;
 
 int main()
 {
@@ -115,20 +118,19 @@ int main()
 		PortsInit();
 		CLR_ERROR;
 		
-		
+		ADC_init();	
+	
 		Timer_1_init();
 		Timer_2_init();
 		Timer_4_init();
 		Timer_3_init();		
-		Timer_8_init();
-		Timer_5_init();
 		Timer_7_init();
 		
-		Timer_9_init();
+		Timer_8_init();
 		
 		InitSynchro();
 		
-		ADC_init();	
+
 		FMSTR_InitSerial();
 		
 		CLR_POWER;
@@ -140,17 +142,17 @@ int main()
 		DeadTime = DTM;
 
 		NotTest = 1; // All PWM defined G_ALL and PWM_ALL
-		NoCheck = 1; // Reg_On turn by STB_ON (C5)
+		NoCheck = 0; // RegOn turn by STB_ON (C5)
 		PWR_ON = 0;
 		G_ALL = 1;
 		
-		PWM1=PWM2=PWM3=PWM4=PWM5=PWM6=0;
+		PWM1=PWM2=PWM3=PWM4=0;
 		
 		InitCAN_Master_Slave();
 			
 		while (1)
 		{			
-				if(PultTestMode || (!TEST_IN_PORT)) PultTest();
+//				if(PultTestMode) PultTest();
 			
 				if(NotTest) Check_Err_Mode_Lamps();
 			
@@ -204,10 +206,7 @@ __STATIC_INLINE void Blink_lamp(uint16_t N)
 
 __STATIC_INLINE void PultTest(void) {
 	static uint16_t j = 0;
-	
-	if(!TEST_IN_PORT) 
-	{
-			PultTestMode = 1;	
+		
 			NotTest = 0; 
 			NoCheck = 0; 
 			UprOn = 0; 
@@ -231,20 +230,12 @@ __STATIC_INLINE void PultTest(void) {
 			if(VOFF_IN_PORT) PWR_ON = 1;
 			else PWR_ON = 0;
 		
-			PWM1=PWM2=PWM3=PWM4=PWM5=PWM6=PultTestPWM;
+			PWM1=PWM2=PWM3=PWM4=PultTestPWM;
 			G1 = (PultTestActiveCh>>0) & 1;
 			G2 = (PultTestActiveCh>>1) & 1;
 			G3 = (PultTestActiveCh>>2) & 1;
 			G4 = (PultTestActiveCh>>3) & 1;
-			G5 = (PultTestActiveCh>>4) & 1;
-			G6 = (PultTestActiveCh>>5) & 1;
-	}
-	else
-	{		
-		PultTestMode = 0;
-		NotTest = 1; 
-		NoCheck = 1; 	
-	}
+
 }
 
 __STATIC_INLINE void PWM_set(void) {
@@ -254,17 +245,14 @@ __STATIC_INLINE void PWM_set(void) {
 								PWM2=PWM_ALL+PWM_ALL_ADD[0];
 								PWM4=PWM_ALL+PWM_ALL_ADD[1];
 								PWM3=PWM_ALL+PWM_ALL_ADD[2];
-								PWM5=PWM_ALL+PWM_ALL_ADD[3];
-								PWM6=PWM_ALL+PWM_ALL_ADD[4];					
-								G1=G2=G3=G4=G5=G6=G_ALL;
+				
+								G1=G2=G3=G4=G_ALL;
 				}
 				else {
 								if(PWM1 > PWM_MAX) PWM1 = PWM_MAX;
 								if(PWM2 > PWM_MAX) PWM2 = PWM_MAX;
 								if(PWM3 > PWM_MAX) PWM3 = PWM_MAX;
-								if(PWM4 > PWM_MAX) PWM4 = PWM_MAX;	
-								if(PWM5 > PWM_MAX) PWM5 = PWM_MAX;	
-								if(PWM6 > PWM_MAX) PWM6 = PWM_MAX;						
+								if(PWM4 > PWM_MAX) PWM4 = PWM_MAX;						
 					
 /*								if(G1) SET_LED1;
 								else CLR_LED1;
@@ -281,29 +269,21 @@ __STATIC_INLINE void PWM_set(void) {
 				}
 				
 			
-				if(G2==1) TIM2->CCMR1 = 0x7060;	
+				if(G2==1) TIM2->CCMR1 = 0x6060;	
 				else	 if(G2==0) TIM2->CCMR1 = 0x4040;
 							else if(G2==2) TIM2->CCMR1 = 0x5040;
 			
-				if(G1==1) TIM1->CCMR1 = 0x7060;	
+				if(G1==1) TIM1->CCMR1 = 0x6060;	
 				else	 if(G1==0) TIM1->CCMR1 = 0x4040;
 							else if(G1==2) TIM1->CCMR1 = 0x5040;
 
-				if(G3==1) TIM3->CCMR1 = 0x7060;	
+				if(G3==1) TIM3->CCMR1 = 0x6060;	
 				else	 if(G3==0) TIM3->CCMR1 = 0x4040;
 							else if(G3==2) TIM3->CCMR1 = 0x5040;
 			
-				if(G4==1) TIM4->CCMR1 = 0x7060;	
+				if(G4==1) TIM4->CCMR1 = 0x6060;	
 				else	 if(G4==0) TIM4->CCMR1 = 0x4040;
 							else if(G4==2) TIM4->CCMR1 = 0x5040;
-				
-				if(G5==1) TIM5->CCMR1 = 0x7060;	
-				else	 if(G5==0) TIM5->CCMR1 = 0x4040;
-							else if(G5==2) TIM5->CCMR1 = 0x5040;
-			
-				if(G6==1) TIM8->CCMR1 = 0x7060;	
-				else	 if(G6==0) TIM8->CCMR1 = 0x4040;	
-							else if(G6==2) TIM8->CCMR1 = 0x5040;
 			
 				TIM_SetCompare1(TIM1,PWM1);
 			  TIM_SetCompare2(TIM1,PWM1+DeadTime);
@@ -316,12 +296,6 @@ __STATIC_INLINE void PWM_set(void) {
 			
 				TIM_SetCompare1(TIM4,PWM4);
 			  TIM_SetCompare2(TIM4,PWM4+DeadTime);
-			
-			  TIM_SetCompare1(TIM5,PWM5);
-				TIM_SetCompare2(TIM5,PWM5+DeadTime);
-			
-				TIM_SetCompare1(TIM8,PWM6);
-			  TIM_SetCompare2(TIM8,PWM6+DeadTime);
 }
 
 __STATIC_INLINE void Restart_Power_Charge(void) {
@@ -364,16 +338,12 @@ void RegCurrent(void) {
 	
 		if(RegOn){	if(!RegOn_1) {All_Pwr_On();}							
 								PWM_ALL = mult_r_ostatok(U_big, i)+ DeadTime;	//Correct dead zone
-								if(ostatok > 5460) PWM_ALL_ADD[0] = 1;
+								if(ostatok > 8000) PWM_ALL_ADD[0] = 1;
 								else PWM_ALL_ADD[0] = 0;
-								if(ostatok > 2*5460) PWM_ALL_ADD[1] = 1;
+								if(ostatok > 16000) PWM_ALL_ADD[1] = 1;
 								else PWM_ALL_ADD[1] = 0;		
-								if(ostatok > 3*5460) PWM_ALL_ADD[2] = 1;
-								else PWM_ALL_ADD[2] = 0;	
-								if(ostatok > 4*5460) PWM_ALL_ADD[3] = 1;
-								else PWM_ALL_ADD[3] = 0;
-								if(ostatok > 5*5460) PWM_ALL_ADD[4] = 1;
-								else PWM_ALL_ADD[4] = 0;				
+								if(ostatok > 24000) PWM_ALL_ADD[2] = 1;
+								else PWM_ALL_ADD[2] = 0;				
 								SET_LED_RUN;	
 								PWM_Off_now=0;
 		}	
@@ -469,8 +439,6 @@ __STATIC_INLINE void All_Pwr_Off(void) {
 	TIM2->CCER = 0;
 	TIM3->CCER = 0;
 	TIM4->CCER = 0;
-	TIM5->CCER = 0;
-	TIM8->CCER = 0;
 	
 	PWM_Off++;
 }
@@ -480,8 +448,6 @@ __STATIC_INLINE void All_Pwr_On(void) {
 	TIM2->CCER = 0x11;
 	TIM3->CCER = 0x11;
 	TIM4->CCER = 0x11;
-	TIM5->CCER = 0x11;
-	TIM8->CCER = 0x11;
 	
 	PWM_On++;
 }
@@ -660,7 +626,11 @@ __STATIC_INLINE void CAN_exchange(void) {
 }
 
 
+
 __STATIC_INLINE void CorrectTemperature (void) {
+	
+float Tn=10,Tv=10,Sn=0,Sv=0,Snm,Svm,Snb,Svb,S1,S2;	
+char iii,it,is;	
 									float_t_cels = ((float)t_cels)/((float)65536);
 									float_Sin = ((float)Sin)/((float)U25V)*10000;
 					
@@ -695,21 +665,15 @@ __STATIC_INLINE void CorrectTemperature (void) {
 
 __STATIC_INLINE void InitSynchro(void)	{
 	TIM1->CNT = 0;
-	TIM2->CNT = OFFSET_PWM;
-	TIM3->CNT = OFFSET_PWM*2;
-	TIM4->CNT = OFFSET_PWM*3;
-	TIM_ITConfig(TIM4, TIM_IT_CC3, ENABLE);
-//	TIM5->CNT = PWM_100-OFFSET_PWM-30;
-//	TIM5->CR1 |= TIM_CR1_DIR;
-//	TIM8->CNT = PWM_100-OFFSET_PWM*2-30;
-//	TIM8->CR1 |= TIM_CR1_DIR;
+	TIM2->CNT = OFFSET_PWM+6;
+	TIM3->CNT = OFFSET_PWM*2+12;
+	TIM4->CNT = OFFSET_PWM*3+18;
 	
 	TIM1->CR1 |= TIM_CR1_CEN;
-	TIM2->CR1 |= TIM_CR1_CEN;
-	TIM3->CR1 |= TIM_CR1_CEN;
-	TIM4->CR1 |= TIM_CR1_CEN;
-//	TIM5->CR1 |= TIM_CR1_CEN;
-//	TIM8->CR1 |= TIM_CR1_CEN;
+//	TIM2->CR1 |= TIM_CR1_CEN;
+//	TIM3->CR1 |= TIM_CR1_CEN;
+//	TIM4->CR1 |= TIM_CR1_CEN;
+
 	//First_Start1=1;
 }
 
@@ -756,20 +720,11 @@ void PortsInit(void) {
 	GPIO_InitStructure.GPIO_OType = 								GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = 									GPIO_PuPd_NOPULL;
   GPIO_InitStructure.GPIO_Mode = 									GPIO_Mode_IN;		
-  GPIO_InitStructure.GPIO_Pin = 									GPIO_Pin_3;
+  GPIO_InitStructure.GPIO_Pin = 									GPIO_Pin_2;
   GPIO_InitStructure.GPIO_Speed = 								GPIO_Speed_2MHz;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);	
 	
-	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
-	GPIO_InitStructure.GPIO_OType = 								GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = 									GPIO_PuPd_UP;
-  GPIO_InitStructure.GPIO_Mode = 									GPIO_Mode_IN;		
-  GPIO_InitStructure.GPIO_Pin = 									GPIO_Pin_2;
-  GPIO_InitStructure.GPIO_Speed = 								GPIO_Speed_2MHz;
-	GPIO_Init(GPIOD, &GPIO_InitStructure);	
-
-
-	GPIOC->ODR &= ~(1<<7);	
+//	GPIOC->ODR &= ~(1<<7);	
 
 }
 
