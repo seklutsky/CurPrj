@@ -1,4 +1,4 @@
-#define TCOMP									0 //1 - on, 0 - off
+#define TCOMP									1 //1 - on, 0 - off
 
 #define I_MAX									12 //1 to 16.5
 
@@ -96,7 +96,7 @@
 //#define PIREG_P_GAIN_SHIFT_I 		-7//
 
 
-#define DERIVATIVE	2
+#define DERIVATIVE	4
 #define PIREG_I_GAIN_SHIFT_I   	-1//
 #define PIREG_P_GAIN_SHIFT_I 		-5//
 
