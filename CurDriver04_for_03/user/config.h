@@ -1,4 +1,4 @@
-#define TCOMP									1 //1 - on, 0 - off
+#define TCOMP									0 //1 - on, 0 - off
 
 #define I_MAX									12 //1 to 16.5
 
@@ -9,6 +9,9 @@
 #define DatTemp 							1   
 
 #define FILTER_T							15
+
+#define ABS_ERR_MIN 					150.0
+#define ABS_ERR_K							(16000.0/ABS_ERR_MIN)//106
 
 #define MaxTemp								60
 #define MinTemp								0
@@ -60,11 +63,13 @@
 
 #define I_MAX_REG 				(I_MAX*0x7FFF/I_MAX_MEASUREMENT)	// 12/12.5 = 0.96
 #define I_MAX_CORRECT			(I_MAX*ADC_SCALE/I_MAX_ABS)	// 12/16.5 * 4096 = 2979
-#define I_20A							(20*ADC_SCALE/I_MAX_ABS)// 2642
+#define I_12A							(12*ADC_SCALE/I_MAX_ABS)// 2642
 
-#define Uvh_MIN						U_MIN_VOLT*ADC_SCALE/29.91 //
-#define Uvh_MAX						U_MAX_VOLT*ADC_SCALE/29.91 //
-#define Uvyh_MAX				  U_MAX_OUT_VOLT*ADC_SCALE/29.91 
+#define U_VH_MAX_IZM					29.91
+
+#define Uvh_MIN						U_MIN_VOLT*ADC_SCALE/U_VH_MAX_IZM //
+#define Uvh_MAX						U_MAX_VOLT*ADC_SCALE/U_VH_MAX_IZM //
+#define Uvyh_MAX				  U_MAX_OUT_VOLT*ADC_SCALE/U_VH_MAX_IZM 
 
 
 
@@ -86,12 +91,12 @@
 #define PIREG_P_GAIN_I    	   	16000		
 #define PIREG_I_GAIN_I   	   		16000
 
+#define PIREG_I_GAIN_SHIFT_I   	-2//
+#define PIREG_P_GAIN_SHIFT_I 		-7//
 
-#define PIREG_P_GAIN_SHIFT_I 		0//-1//-1
-#define PIREG_I_GAIN_SHIFT_I   	3//0//-1
-		
-//#define PIREG_P_GAIN_SHIFT_I 		-2//-2
-//#define PIREG_I_GAIN_SHIFT_I   	1//1
+//#define PIREG_I_GAIN_SHIFT_I   	-0		
+//#define PIREG_P_GAIN_SHIFT_I 		-3
+
 
 #define F_TRM_MAX					((MaxTemp+273)<<16)
 #define F_TRM_MIN					((MinTemp+273)<<16)
@@ -131,12 +136,12 @@
 //#define VL_IN_PORT (GPIOC->IDR)&(1<<6) 		//PWM-IN
 
 #define NAPR_MIN_ 				1 //V
-#define NAPR_MIN				  NAPR_MIN_*ADC_SCALE/66 
+#define NAPR_MIN				  NAPR_MIN_*ADC_SCALE/U_VH_MAX_IZM 
 #define I_KZ_							1.8 //A
 #define I_KZ							I_KZ_*ADC_SCALE/I_MAX_ABS
 
 #define rsh(x,n) ( (x>=0)?(x>>n):( -((-x)>>n) ))
-#define abs(x) (x>0?x:-x)
+#define abs(x) (x>=0?x:-x)
 #define saturate(x,a,b) ((x>b)?b:((x<a)?a:x))
 
 #define FRAC16(x) ((uint16_t)((x) < 1 ? ((x) >= -1 ? ((uint16_t)((x)*0x8000)) : ((uint16_t)0x8000)) : ((uint16_t)0x7FFF)))

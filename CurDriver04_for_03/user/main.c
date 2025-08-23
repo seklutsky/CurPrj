@@ -42,6 +42,7 @@ __STATIC_INLINE void CorrectTemperature (void);
 __STATIC_INLINE void InitSynchro(void);
 __STATIC_INLINE void Restart_Power_Charge(void);
 __STATIC_INLINE void PWM_set(void);
+__STATIC_INLINE void PWM_set_now(void);
 __STATIC_INLINE void PultTest(void);
 
 uint16_t test, counter7, Sin, Istep, U_big, I_tmp, U_tmp, i_real, i_desired, UprADC, U_input, PWM, i_real_kz = I_KZ,i_max_desired, Tcomp = TCOMP;
@@ -64,11 +65,14 @@ typedef struct
     int16_t NegativePILimit;
     int8_t ProportionalShift;
     int8_t IntegralShift;
+		int32_t AddFiltr;
+		int32_t prevOut;
+		int16_t prevErr;
 } mc_sPIparams;
 
 
 char RegOn=0, RegOn_1=0,  UprOn = 0, TemrControl = DatTemp, Error_out = 0, Error_out_buff = 0,  Stop_Mode = 0, CAN_send = 0,CurrentRegTesting;
-mc_sPIparams  	PIRegParams_i={PIREG_P_GAIN_I,PIREG_I_GAIN_I,0,FRAC16(1),0,PIREG_P_GAIN_SHIFT_I,PIREG_I_GAIN_SHIFT_I};
+mc_sPIparams  	PIRegParams_i={PIREG_P_GAIN_I,PIREG_I_GAIN_I,0,FRAC16(1),0,PIREG_P_GAIN_SHIFT_I,PIREG_I_GAIN_SHIFT_I,0,0,0};
 
 int16_t controllerPItype(int16_t desired, int16_t actual, mc_sPIparams* piParams);
 int32_t sadd32(int32_t a, int32_t b);
@@ -156,8 +160,8 @@ int main()
 			
 				if(NotTest) Check_Err_Mode_Lamps();
 			
-				if(PWR_ON) Restart_Power_Charge();
-				else {CLR_POWER;	Restart_Power = 0;Count_Reset=0;}		
+				if(PWR_ON) SET_POWER;//Restart_Power_Charge();
+				else {CLR_POWER;}//	Restart_Power = 0;Count_Reset=0;}		
 			
 				Temperature_Compute();
 							
@@ -238,6 +242,23 @@ __STATIC_INLINE void PultTest(void) {
 
 }
 
+__STATIC_INLINE void PWM_set_now(void) {
+								PWM1=PWM_ALL;
+								PWM2=PWM_ALL+PWM_ALL_ADD[0];
+								PWM4=PWM_ALL+PWM_ALL_ADD[1];
+								PWM3=PWM_ALL+PWM_ALL_ADD[2];
+	
+								TIM1->CCR1 = PWM1;
+								TIM1->CCR2 = PWM1+DeadTime;
+								TIM2->CCR1 = PWM2;
+								TIM2->CCR2 = PWM2+DeadTime;
+								TIM3->CCR1 = PWM3;
+								TIM3->CCR2 = PWM3+DeadTime;
+								TIM4->CCR1 = PWM4;
+								TIM4->CCR2 = PWM4+DeadTime;
+}
+
+
 __STATIC_INLINE void PWM_set(void) {
 
 				if(NotTest)	{
@@ -298,23 +319,7 @@ __STATIC_INLINE void PWM_set(void) {
 			  TIM_SetCompare2(TIM4,PWM4+DeadTime);
 }
 
-__STATIC_INLINE void Restart_Power_Charge(void) {
-					if(Count_Reset == 0)	{
-						if(Restart_Power < ChargeTime) {SET_POWER;Restart_Power++;}
-						else if(Restart_Power < ChargeTime+PauseRestart) {CLR_POWER;Restart_Power++;}
-						else {SET_POWER;Count_Reset++;Restart_Power=0;}
-					}
-					else if(Count_Reset == 1)	{
-						if(Restart_Power < ChargeTime) {SET_POWER;Restart_Power++;}
-						else if(Restart_Power < ChargeTime+PauseRestart) {CLR_POWER;Restart_Power++;}
-						else {SET_POWER;Count_Reset++;Restart_Power=0;}
-					}
-					else if(Count_Reset == 2)	{
-						if(Restart_Power < ChargeTime) {SET_POWER;Restart_Power++;}
-						else if(Restart_Power < ChargeTime+PauseRestart) {CLR_POWER;Restart_Power++;}
-						else {SET_POWER;Count_Reset++;Restart_Power=0;}
-					}
-}
+
 
 uint8_t PWM_Off_now=0;
 
@@ -343,7 +348,8 @@ void RegCurrent(void) {
 								if(ostatok > 16000) PWM_ALL_ADD[1] = 1;
 								else PWM_ALL_ADD[1] = 0;		
 								if(ostatok > 24000) PWM_ALL_ADD[2] = 1;
-								else PWM_ALL_ADD[2] = 0;				
+								else PWM_ALL_ADD[2] = 0;	
+								PWM_set_now();	
 								SET_LED_RUN;	
 								PWM_Off_now=0;
 		}	
@@ -379,23 +385,29 @@ __int64 r;
 
 
 
-int32_t Err, Integr32, Prop32, High, Low, out, Prop323;
-int16_t shift;
+int32_t Err, absErr, Integr32, Prop32, High, Low, out, Prop323, absErrMin = ABS_ERR_MIN, absErrK = ABS_ERR_K;
+int16_t shift,Kder = 4, out16;
+int32_t derivative;
+int32_t prediction; 
 
 // PI controller
 int16_t controllerPItype(int16_t desired, int16_t actual, mc_sPIparams* piParams) {
 
 int32_t i,j;
-	Err = (int32_t)desired - (int32_t)actual;	
+	Err = (int32_t)desired - (int32_t)actual;		
+	derivative = Err - piParams->prevErr;	
+	piParams->prevErr =  Err;
 	
+  prediction = Err + Kder*derivative; 
+
 	High=(int32_t)piParams->PositivePILimit<<16;
 	Low=(int32_t)piParams->NegativePILimit<<16;	
 	
 	shift=piParams->ProportionalShift;
 	if (piParams->ProportionalShift>=0) {
-		Prop32 = (Err * piParams->ProportionalGain)>>piParams->ProportionalShift;		
+		Prop32 = (prediction * piParams->ProportionalGain)>>piParams->ProportionalShift;		
 	} else {
-		Prop32=(Err * (int32_t)piParams->ProportionalGain);	
+		Prop32=(prediction * (int32_t)piParams->ProportionalGain);	
 		j=abs(piParams->ProportionalShift);
 		i=0x7FFFFFFF>>j;
 		if (Prop32>i) Prop32=i;
@@ -403,6 +415,11 @@ int32_t i,j;
 		if (Prop32<i) Prop32=i;		
 		Prop32=Prop32<<j;
 	}	
+
+	piParams->AddFiltr = Prop32 - piParams->prevOut;	
+	
+	piParams->prevOut =  Prop32;
+
   	
 	if (piParams->IntegralShift>=0) {
 		Integr32 = (Err * piParams->IntegralGain)>>piParams->IntegralShift;
@@ -423,12 +440,9 @@ int32_t i,j;
 	
 	out=sadd32(piParams->IntegralPortion, Prop32);
 	
-	if (out>High) { out=High; } // piParams->IntegralPortion=ssub32(High,Prop32); }
-	if (out<Low) { out=Low; } // piParams->IntegralPortion=ssub32(Low,Prop32); }
-	
-//	if (piParams->IntegralPortion>High) piParams->IntegralPortion=High;
-//	if (piParams->IntegralPortion<Low) piParams->IntegralPortion=Low;
-	
+	if (out>High) { out=High; } 
+	if (out<Low) { out=Low; } 
+
 	return (int16_t)(out>>16);
 }
 
@@ -444,10 +458,10 @@ __STATIC_INLINE void All_Pwr_Off(void) {
 }
 
 __STATIC_INLINE void All_Pwr_On(void) {
-	TIM1->CCER = 0x11;
-	TIM2->CCER = 0x11;
-	TIM3->CCER = 0x11;
-	TIM4->CCER = 0x11;
+	TIM1->CCER = 0x31;
+	TIM2->CCER = 0x31;
+	TIM3->CCER = 0x31;
+	TIM4->CCER = 0x31;
 	
 	PWM_On++;
 }
@@ -657,7 +671,7 @@ char iii,it,is;
 									S2 = Svm + (float_Sin - Sn)*(Svb - Svm)/(Sv-Sn);
 									float_Sout = S1 + (S2 - S1)*(float_t_cels - Tn)/(Tv - Tn);
 									
-									Result = (uint16_t)((float)I_20A*(float_Sout/10000));
+									Result = (uint16_t)((float)I_12A*(float_Sout/10000));
 									
 									if(Result > I_MAX_CORRECT) i_desired = I_MAX_CORRECT;
 									else i_desired = Result;
@@ -670,9 +684,9 @@ __STATIC_INLINE void InitSynchro(void)	{
 	TIM4->CNT = OFFSET_PWM*3+18;
 	
 	TIM1->CR1 |= TIM_CR1_CEN;
-//	TIM2->CR1 |= TIM_CR1_CEN;
-//	TIM3->CR1 |= TIM_CR1_CEN;
-//	TIM4->CR1 |= TIM_CR1_CEN;
+	TIM2->CR1 |= TIM_CR1_CEN;
+	TIM3->CR1 |= TIM_CR1_CEN;
+	TIM4->CR1 |= TIM_CR1_CEN;
 
 	//First_Start1=1;
 }

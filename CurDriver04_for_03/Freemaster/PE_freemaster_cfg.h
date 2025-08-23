@@ -43,7 +43,7 @@
 
 /* Recorder support */
 #define FMSTR_USE_RECORDER      1      /* Recorder support enabled */
-#define FMSTR_REC_BUFF_SIZE     2048   /* Recorder buffer size */
+#define FMSTR_REC_BUFF_SIZE     4096   /* Recorder buffer size */
 #define FMSTR_USE_FASTREC       0      /* Fast recorder support disabled */
 #define FMSTR_REC_OWNBUFF       0      /* User-allocated rec. buffer is not used */
 #define FMSTR_REC_FARBUFF       0      /* Buffer is not putted in "fardata" section */

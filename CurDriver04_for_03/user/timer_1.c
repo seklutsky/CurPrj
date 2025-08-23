@@ -45,12 +45,10 @@ void Timer_1_init(void)  				// 32 bit timer!
 
   TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
   TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
- // TIM_OCInitStructure.TIM_OutputNState = TIM_OutputNState_Enable;
   TIM_OCInitStructure.TIM_Pulse = 0;
   TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
-//  TIM_OCInitStructure.TIM_OCNPolarity = TIM_OCPolarity_High;
   TIM_OCInitStructure.TIM_OCIdleState = TIM_OCIdleState_Set;
- // TIM_OCInitStructure.TIM_OCNIdleState = TIM_OCNIdleState_Set;
+
   TIM_OC1Init(TIM1, &TIM_OCInitStructure);
 
 	TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_Low;
@@ -89,6 +87,7 @@ extern char ADC_ch,_ADC_ch,ADC_INIT_DONE;
 char ResetCounters=0;
 extern long int ADC_counter,ADC_counter1,ADC_counter2,ADC_counter3,ADC_counter4,ADC_counter5;
 extern uint16_t  Istep;
+uint16_t I_test=I_TEST;
  
  void TIM1_CC_IRQHandler(void)  {
 	
@@ -96,8 +95,8 @@ extern uint16_t  Istep;
 //	 TIM1->SR = 0;
 	 Timer_Counter++;
 	 
-	 if(Timer_Counter&0x2000) Istep = 0;
-	 else Istep = I_TEST;
+	 if(Timer_Counter&0x100) Istep = 0;
+	 else Istep = I_test;
 	 
 	 if(Timer_Counter&0x1)	{//24.3712 mkS
 			if(ADC_INIT_DONE) {
