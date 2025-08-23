@@ -146,7 +146,7 @@ int main()
 		DeadTime = DTM;
 
 		NotTest = 1; // All PWM defined G_ALL and PWM_ALL
-		NoCheck = 0; // RegOn turn by STB_ON (C5)
+		NoCheck = 1; // RegOn turn by STB_ON (C5)
 		PWR_ON = 0;
 		G_ALL = 1;
 		
@@ -386,7 +386,7 @@ __int64 r;
 
 
 int32_t Err, absErr, Integr32, Prop32, High, Low, out, Prop323, absErrMin = ABS_ERR_MIN, absErrK = ABS_ERR_K;
-int16_t shift,Kder = 4, out16;
+int16_t shift,Kder = DERIVATIVE, out16;
 int32_t derivative;
 int32_t prediction; 
 

@@ -91,9 +91,17 @@
 #define PIREG_P_GAIN_I    	   	16000		
 #define PIREG_I_GAIN_I   	   		16000
 
-#define PIREG_I_GAIN_SHIFT_I   	-2//
-#define PIREG_P_GAIN_SHIFT_I 		-7//
+//#define DERIVATIVE	8
+//#define PIREG_I_GAIN_SHIFT_I   	-2//
+//#define PIREG_P_GAIN_SHIFT_I 		-7//
 
+
+#define DERIVATIVE	2
+#define PIREG_I_GAIN_SHIFT_I   	-1//
+#define PIREG_P_GAIN_SHIFT_I 		-5//
+
+
+//#define DERIVATIVE	0
 //#define PIREG_I_GAIN_SHIFT_I   	-0		
 //#define PIREG_P_GAIN_SHIFT_I 		-3
 
