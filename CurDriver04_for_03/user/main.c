@@ -40,10 +40,9 @@ __STATIC_INLINE void Temperature_Compute(void);
 __STATIC_INLINE void CAN_exchange(void);
 __STATIC_INLINE void CorrectTemperature (void);
 __STATIC_INLINE void InitSynchro(void);
-__STATIC_INLINE void Restart_Power_Charge(void);
 __STATIC_INLINE void PWM_set(void);
 __STATIC_INLINE void PWM_set_now(void);
-__STATIC_INLINE void PultTest(void);
+
 
 uint16_t test, counter7, Sin, Istep, U_big, I_tmp, U_tmp, i_real, i_desired, UprADC, U_input, PWM, i_real_kz = I_KZ,i_max_desired, Tcomp = TCOMP;
 int16_t ostatok;
@@ -156,12 +155,11 @@ int main()
 			
 		while (1)
 		{			
-//				if(PultTestMode) PultTest();
 			
 				if(NotTest) Check_Err_Mode_Lamps();
 			
-				if(PWR_ON) SET_POWER;//Restart_Power_Charge();
-				else {CLR_POWER;}//	Restart_Power = 0;Count_Reset=0;}		
+				if(PWR_ON) SET_POWER;
+				else {CLR_POWER;}
 			
 				Temperature_Compute();
 							
@@ -208,39 +206,6 @@ __STATIC_INLINE void Blink_lamp(uint16_t N)
 }
 
 
-__STATIC_INLINE void PultTest(void) {
-	static uint16_t j = 0;
-		
-			NotTest = 0; 
-			NoCheck = 0; 
-			UprOn = 0; 
-			RegOn = 0;		
-			
-			if(CounterTestOn < 5) 
-			{
-				Blink_lamp(j);
-				j++;
-				if(j > 4) j = 0;
-			}
-			else
-			{
-				SET_LED_RUN;
-				SET_LED1;
-				SET_LED2;
-				SET_LED3;
-				SET_LED4;
-			}
-	
-			if(VOFF_IN_PORT) PWR_ON = 1;
-			else PWR_ON = 0;
-		
-			PWM1=PWM2=PWM3=PWM4=PultTestPWM;
-			G1 = (PultTestActiveCh>>0) & 1;
-			G2 = (PultTestActiveCh>>1) & 1;
-			G3 = (PultTestActiveCh>>2) & 1;
-			G4 = (PultTestActiveCh>>3) & 1;
-
-}
 
 __STATIC_INLINE void PWM_set_now(void) {
 								PWM1=PWM_ALL;
@@ -355,18 +320,8 @@ void RegCurrent(void) {
 		}	
 		else {
 								if(NoCheck) {
-												PWM_ALL = 0;
+												PWM_ALL_ADD[0] = PWM_ALL_ADD[1] = PWM_ALL_ADD[2] = PWM_ALL = 0;
 												if(RegOn_1) {All_Pwr_Off();}
-									
-											/*	if(RegOn_1) {
-															//All_Pwr_Off();
-															PWM_Off_now = 1;
-															PWM_ALL = PWM_ALL/2;															
-												}
-												else {
-															PWM_ALL = 0;
-															if(PWM_Off_now) {All_Pwr_Off();PWM_Off_now=0;}
-												}*/
 								}
 								PIRegParams_i.IntegralPortion = 0;
 								CLR_LED_RUN;
@@ -449,10 +404,10 @@ int32_t i,j;
 uint16_t PWM_Off=0,PWM_On=0;
 
 __STATIC_INLINE void All_Pwr_Off(void) {
-	TIM1->CCER = 0;
-	TIM2->CCER = 0;
-	TIM3->CCER = 0;
-	TIM4->CCER = 0;
+//	TIM1->CCER = 00;
+//	TIM2->CCER = 00;
+//	TIM3->CCER = 00;
+//	TIM4->CCER = 00;
 	
 	PWM_Off++;
 }
@@ -605,6 +560,9 @@ __STATIC_INLINE void Check_Err_Mode_Lamps(void)	{
 									if(ERR_IN_PORT) {ExternalError = 1;Stop_Mode = 2;}
 									else {ExternalError = 0;	Stop_Mode = 0;}
 				}
+				
+//				if(ERR_IN_PORT) {ExternalError = 1;}
+//				else {ExternalError = 0;}				
 
 				GPIOB->ODR = ((uint16_t) (Error_out_buff&0x0F))<<11; //SET_LED
 				
