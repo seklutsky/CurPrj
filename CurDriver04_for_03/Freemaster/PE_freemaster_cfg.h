@@ -48,7 +48,7 @@
 #define FMSTR_REC_OWNBUFF       0      /* User-allocated rec. buffer is not used */
 #define FMSTR_REC_FARBUFF       0      /* Buffer is not putted in "fardata" section */
 #define FMSTR_MAX_REC_VARS      8      /* Max. number of recorder variables (2..8) */
-#define FMSTR_REC_TIMEBASE      32868  /* Recorder timebase */
+#define FMSTR_REC_TIMEBASE      (32868 - 76)  /* Recorder timebase */
 #define FMSTR_USE_BRIEFINFO     0      /* Full board information structure is required becouse recorder is used */
 
 /* Target-side addressing support */

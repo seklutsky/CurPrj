@@ -96,14 +96,14 @@
 //#define PIREG_P_GAIN_SHIFT_I 		-7//
 
 
-#define DERIVATIVE	4
-#define PIREG_I_GAIN_SHIFT_I   	-1//
-#define PIREG_P_GAIN_SHIFT_I 		-5//
+//#define DERIVATIVE	4
+//#define PIREG_I_GAIN_SHIFT_I   	-1//
+//#define PIREG_P_GAIN_SHIFT_I 		-5//
 
 
-//#define DERIVATIVE	0
-//#define PIREG_I_GAIN_SHIFT_I   	-0		
-//#define PIREG_P_GAIN_SHIFT_I 		-3
+#define DERIVATIVE	0
+#define PIREG_I_GAIN_SHIFT_I   	 0		
+#define PIREG_P_GAIN_SHIFT_I 		-4
 
 
 #define F_TRM_MAX					((MaxTemp+273)<<16)

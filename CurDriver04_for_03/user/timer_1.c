@@ -95,7 +95,7 @@ uint16_t I_test=I_TEST;
 //	 TIM1->SR = 0;
 	 Timer_Counter++;
 	 
-	 if(Timer_Counter&0x100) Istep = 0;
+	 if(Timer_Counter&0x200) Istep = 0;
 	 else Istep = I_test;
 	 
 	 if(Timer_Counter&0x1)	{//24.3712 mkS
