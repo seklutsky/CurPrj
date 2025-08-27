@@ -341,28 +341,29 @@ __int64 r;
 
 
 int32_t Err, absErr, Integr32, Prop32, High, Low, out, Prop323, absErrMin = ABS_ERR_MIN, absErrK = ABS_ERR_K;
-int16_t shift,Kder = DERIVATIVE, out16;
-int32_t derivative;
-int32_t prediction; 
+int16_t shift;
+//,Kder = DERIVATIVE, out16;
+//int32_t derivative;
+//int32_t prediction; 
 
 // PI controller
 int16_t controllerPItype(int16_t desired, int16_t actual, mc_sPIparams* piParams) {
 
 int32_t i,j;
 	Err = (int32_t)desired - (int32_t)actual;		
-	derivative = Err - piParams->prevErr;	
+//	derivative = Err - piParams->prevErr;	
 	piParams->prevErr =  Err;
 	
-  prediction = Err + Kder*derivative; 
+//  prediction = Err + Kder*derivative; 
 
 	High=(int32_t)piParams->PositivePILimit<<16;
 	Low=(int32_t)piParams->NegativePILimit<<16;	
 	
 	shift=piParams->ProportionalShift;
 	if (piParams->ProportionalShift>=0) {
-		Prop32 = (prediction * piParams->ProportionalGain)>>piParams->ProportionalShift;		
+		Prop32 = (Err * piParams->ProportionalGain)>>piParams->ProportionalShift;		
 	} else {
-		Prop32=(prediction * (int32_t)piParams->ProportionalGain);	
+		Prop32=(Err * (int32_t)piParams->ProportionalGain);	
 		j=abs(piParams->ProportionalShift);
 		i=0x7FFFFFFF>>j;
 		if (Prop32>i) Prop32=i;
