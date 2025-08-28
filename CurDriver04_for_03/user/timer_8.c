@@ -90,11 +90,9 @@ void Timer_8_init(void)  				// 32 bit timer!
 				if(1&(GPIOC->IDR>>6)) {
 						Period2_ = 0;
 					  TIM8->CCER = 3; //Falling
-					  timer_check[1]++;
 				}
 				else 	{
 					fall=0;						
-					timer_check[2]++;
 				}
 	  }
 		else {  
@@ -110,9 +108,10 @@ void Timer_8_init(void)  				// 32 bit timer!
 				}
 					
 		}
-		
-								Period_all = Period1_ + Period2_; // 								
-								ProcPWM = div_r(Period2_,Period_all);	
+		Period_all = Period1_ + Period2_;
+		if(start_pulse < 2) start_pulse ++;
+								  								
+		else	if((Period_all > 4000)&&(Period_all < 9000))		ProcPWM = div_r(Period2_,Period_all);	
 }
 
 
