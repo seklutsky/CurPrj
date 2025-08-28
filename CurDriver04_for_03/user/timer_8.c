@@ -62,48 +62,77 @@ void Timer_8_init(void)  				// 32 bit timer!
 	NVIC_EnableIRQ(TIM8_CC_IRQn); 
 	NVIC_EnableIRQ(TIM8_UP_TIM13_IRQn);
 
-	
+	TIM8->CNT = 0;
 	TIM_Cmd(TIM8, ENABLE);
  }
 //==========================================================================================================================================
 
  
  char fall = 0;
+ uint16_t start_pulse = 0;
+ uint16_t Err1 = 0;
+ 
+ uint32_t timer_check[3] = {0,0,0};
  
  void TIM8_CC_IRQHandler(void)  {
 
-
-	 
-		TIM_ClearITPendingBit(TIM8, TIM_IT_CC1);
-		TIM8->CNT = 0;
+		TIM8->SR = (uint16_t)~TIM_IT_CC1;
+	  TIM8->CNT = 0;
+//		TIM_ClearITPendingBit(TIM8, TIM_IT_CC1);
+		
 			 
 		//intc++;
 
-	  if(fall) {
-			  fall=0;
+	  if(fall) {		
 				TIM8->CCER = 1; //Rising
 			  Period1_ = TIM8->CCR1;//TIM_GetCapture1(TIM8);	
+			
+				if(1&(GPIOC->IDR>>6)) {
+						Period2_ = 0;
+					  TIM8->CCER = 3; //Falling
+					  timer_check[1]++;
+				}
+				else 	{
+					fall=0;						
+					timer_check[2]++;
+				}
 	  }
-		else {
-			  fall=1;
-				TIM8->CCER = 3; //Falling
+		else {  
+			  TIM8->CCER = 3; //Falling
 			  Period2_ = TIM8->CCR1;//TIM_GetCapture1(TIM8);
+
+				if(!(1&(GPIOC->IDR>>6))) {
+					 Period1_ = 0;
+					 TIM8->CCER = 1; //Rising
+				}
+				else {
+					fall=1;					
+				}
+					
 		}
 		
-//								if(Period2_ > 150) Period2 = Period2_;
-//								if( (Period1_ + Period2) > Period_all_MAX ) Period1 = 0;
-//								else Period1 = Period1_;
 								Period_all = Period1_ + Period2_; // 								
 								ProcPWM = div_r(Period2_,Period_all);	
-		
 }
 
 
  void TIM8_UP_TIM13_IRQHandler(void) {
-			 if(1&(GPIOC->IDR>>6)) ProcPWM = 0;//if(fall) ProcPWM = 0;
-	     else ProcPWM = 0x7FFF;//FRAC16(0.9999);
-	 
-	 		 TIM_ClearITPendingBit(TIM8, TIM_IT_Update);	
+			 if(1&(GPIOC->IDR>>6)) {
+					ProcPWM = 0;
+				  Period2_ = 0;
+				  TIM8->CCER = 3; //Falling
+				  fall=1;
+			 }
+	     else {
+					ProcPWM = 0x7FFF;
+					Period1_ = 0;
+				  TIM8->CCER = 1; //Rising
+				  fall=0;
+			 }
+			start_pulse = 0;
+			timer_check[0]++;
+//	 		 TIM_ClearITPendingBit(TIM8, TIM_IT_Update);	
+			TIM8->SR = (uint16_t)~TIM_IT_Update;
  }
 
 
