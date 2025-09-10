@@ -50,7 +50,6 @@ char First_Start1,First_Start4,First_Start3,First_Start8,First_Start5;
 extern  CanTxMsg TxMessage, DATA_message;
 extern s16 val1, val2, val3,val4,val5, Ibus, V_LED, V_BUS, F_COM, U_output;
 extern uint16_t F_trm, F_trm_, F_trm__,F5V;
-uint16_t Imax_izm = I_MAX_ABS;
 extern uint16_t PultTestMode; 
 extern uint16_t PultTestActiveCh;
 extern uint16_t PultTestPWM;

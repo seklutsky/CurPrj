@@ -1,4 +1,6 @@
-#define TCOMP									1 //1 - on, 0 - off
+#define HARD_REG							1		//From 1 to 4, 1 - Hard 4 - Soft
+
+#define TCOMP									0 //1 - on, 0 - off
 
 #define I_MAX									12 //1 to 16.5
 
@@ -88,22 +90,24 @@
 #define PWM_MAX 		PWM_100-DTM-1 
 
 
-#define PIREG_P_GAIN_I    	   	16000		
+#define PIREG_P_GAIN_I    	   	11000		
 #define PIREG_I_GAIN_I   	   		16000
 
-//#define DERIVATIVE	8
-//#define PIREG_I_GAIN_SHIFT_I   	-2//
-//#define PIREG_P_GAIN_SHIFT_I 		-7//
-
-
-//#define DERIVATIVE	4
-//#define PIREG_I_GAIN_SHIFT_I   	-1//
-//#define PIREG_P_GAIN_SHIFT_I 		-5//
-
-
-#define DERIVATIVE	0
-#define PIREG_I_GAIN_SHIFT_I   	 0		
-#define PIREG_P_GAIN_SHIFT_I 		-4
+#if HARD_REG == 1
+    #define PIREG_I_GAIN_SHIFT_I   0
+    #define PIREG_P_GAIN_SHIFT_I   -3
+#elif HARD_REG == 2
+    #define PIREG_I_GAIN_SHIFT_I   1
+    #define PIREG_P_GAIN_SHIFT_I   -2
+#elif HARD_REG == 3
+    #define PIREG_I_GAIN_SHIFT_I   2
+    #define PIREG_P_GAIN_SHIFT_I   -1
+#elif HARD_REG == 4
+    #define PIREG_I_GAIN_SHIFT_I   3
+    #define PIREG_P_GAIN_SHIFT_I   0
+#else
+    #error "HARD_REG must be between 1 and 4"
+#endif
 
 
 #define F_TRM_MAX					((MaxTemp+273)<<16)
