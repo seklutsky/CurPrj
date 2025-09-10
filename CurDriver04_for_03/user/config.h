@@ -105,6 +105,9 @@
 #elif HARD_REG == 4
     #define PIREG_I_GAIN_SHIFT_I   3
     #define PIREG_P_GAIN_SHIFT_I   0
+#elif HARD_REG == 5
+    #define PIREG_I_GAIN_SHIFT_I   4
+    #define PIREG_P_GAIN_SHIFT_I   1
 #else
     #error "HARD_REG must be between 1 and 4"
 #endif
